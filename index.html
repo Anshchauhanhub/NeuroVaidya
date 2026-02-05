@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuroVaidya - Advanced Skin Analysis</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fa-solid fa-dna"></i> NeuroVaidya <span class="highlight">Skin</span>
+        </div>
+        <div class="nav-links">
+            <a href="#">Home</a>
+            <a href="#">Technology</a>
+            <a href="#">About</a>
+        </div>
+    </nav>
+
+    <main class="container">
+
+        <section class="hero-section">
+            <h1>AI-Powered <span class="gradient-text">Dermatology</span></h1>
+            <p>Clinical-grade skin analysis powered by advanced machine learning. Detect conditions instantly with
+                professional accuracy.</p>
+        </section>
+
+        <section class="analysis-container" id="analysis-container">
+
+            <!-- Upload View -->
+            <div class="upload-area" id="upload-area">
+                <div class="upload-content">
+                    <i class="fa-solid fa-cloud-upload-alt upload-icon"></i>
+                    <h3>Upload or Capture Image</h3>
+                    <p>Drag & drop your skin image here or click to browse</p>
+                    <input type="file" id="file-input" accept="image/*" hidden>
+                    <button class="btn primary-btn" onclick="document.getElementById('file-input').click()">Select
+                        Image</button>
+                    <!-- Future feature: Camera integration -->
+                    <!-- <button class="btn secondary-btn"><i class="fa-solid fa-camera"></i> Use Camera</button> -->
+                </div>
+            </div>
+
+            <!-- Preview & Scanning View (Hidden by default) -->
+            <div class="preview-area hidden" id="preview-area">
+                <div class="image-wrapper">
+                    <img id="image-preview" src="" alt="Skin Preview">
+                    <div class="scan-overlay" id="scan-overlay"></div>
+                </div>
+                <div class="scanning-status" id="scanning-status">
+                    <div class="spinner"></div>
+                    <p>Analyzing tissue structure...</p>
+                </div>
+            </div>
+
+            <!-- Results View (Hidden by default) -->
+            <div class="results-area hidden" id="results-area">
+                <div class="result-header">
+                    <h2>Analysis Report</h2>
+                    <span class="badge confidence-badge">98.5% Confidence</span>
+                </div>
+
+                <div class="result-cards">
+                    <div class="card condition-card">
+                        <h3>Detected Condition</h3>
+                        <p class="condition-name" id="condition-name">Analyzing...</p>
+                        <div class="severity-bar">
+                            <div class="fill" id="severity-fill" style="width: 0%"></div>
+                        </div>
+                        <p class="severity-label">Severity: <span id="severity-text">Medium</span></p>
+                    </div>
+
+                    <div class="card recommendation-card">
+                        <h3>AI Recommendations</h3>
+                        <ul id="recommendation-list">
+                            <li>Generating treatment plan...</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <button class="btn secondary-btn" id="reset-btn">Analyze Another Image</button>
+            </div>
+
+        </section>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2026 NeuroVaidya AI. Clinical grade skin diagnostics.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

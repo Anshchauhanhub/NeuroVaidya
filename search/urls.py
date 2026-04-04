@@ -6,4 +6,5 @@ app_name = 'search'
 urlpatterns = [
     path('', views.SearchView.as_view(), name='search'),
     path('ai-chat/', views.AIChatView.as_view(), name='ai_chat'),
+    path('external/live/', views.LiveMarketSearchView.as_view(), name='live_market_search'),
 ]

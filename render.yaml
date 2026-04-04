@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: neurovaidya
+    env: docker
+    region: oregon # or frankfurt, ohio, singapore
+    plan: free
+    branch: main
+    envVars:
+      - key: DEBUG
+        value: "False"
+      - key: ALLOWED_HOSTS
+        value: "*"
+      - key: SECRET_KEY
+        generateValue: true
+      # You must add these keys manually in the Render dashboard:
+      - key: GROQ_API_KEY
+        sync: false
+      - key: RAZORPAY_KEY_ID
+        sync: false
+      - key: RAZORPAY_KEY_SECRET
+        sync: false

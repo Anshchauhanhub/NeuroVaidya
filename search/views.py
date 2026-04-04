@@ -72,3 +72,22 @@ class AIChatView(APIView):
                 
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class LiveMarketSearchView(APIView):
+    """Proxy endpoint to the local Flask scraper running on port 5000."""
+    permission_classes = [AllowAny]
+    
+    def get(self, request):
+        query = request.query_params.get('q', '')
+        import requests
+        
+        if not query:
+            return Response({'error': 'Query parameter required.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            # Route to local flask scraper service running inside the same container environment
+            resp = requests.get(f"http://127.0.0.1:5000/api/search?q={query}", timeout=15)
+            # Forward the JSON response directly
+            return Response(resp.json(), status=resp.status_code)
+        except Exception as e:
+            return Response({'error': 'Live market search unavailable', 'details': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

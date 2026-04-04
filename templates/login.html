@@ -1,0 +1,401 @@
+{% extends 'auth_base.html' %}
+{% load static %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<section class="section auth-section">
+    <div class="auth-container">
+        <div class="auth-tabs">
+            <button class="auth-tab active" onclick="showTab('login')">Login</button>
+            <button class="auth-tab" onclick="showTab('register')">Register</button>
+        </div>
+
+        <!-- Login Form -->
+        <div id="login-form" class="auth-form">
+            <h2>Welcome Back</h2>
+            <p class="auth-subtitle">Login to access your account</p>
+
+            <form id="loginForm" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" name="password" required>
+                </div>
+                <button type="submit" class="btn-primary full-width">Login</button>
+            </form>
+        </div>
+
+        <!-- Register Form -->
+        <div id="register-form" class="auth-form" style="display: none;">
+            <h2>Create Account</h2>
+            <p class="auth-subtitle">Join NeuroVaidya today</p>
+
+            <form id="registerForm" method="post">
+                {% csrf_token %}
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Role</label>
+                        <select name="role" id="userRole" required onchange="toggleRoleFields()">
+                            <option value="patient">Patient</option>
+                            <option value="pharmacist">Pharmacist</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" name="username" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="tel" name="phone" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" name="password" minlength="8" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Confirm Password</label>
+                        <input type="password" name="confirm_password" required>
+                    </div>
+                </div>
+
+                <!-- Pharmacist-specific fields -->
+                <div id="pharmacistFields" style="display: none;">
+                    <div class="role-section-header">Pharmacist Registration (KYC Required)</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>First Name *</label>
+                            <input type="text" name="first_name">
+                        </div>
+                        <div class="form-group">
+                            <label>Last Name *</label>
+                            <input type="text" name="last_name">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Pharmacy License Number *</label>
+                            <input type="text" name="license_number" placeholder="e.g., MH/12345/2024">
+                        </div>
+                        <div class="form-group">
+                            <label>License Expiry Date *</label>
+                            <input type="date" name="license_expiry">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>License Document *</label>
+                        <input type="file" name="license_document" accept=".pdf,.jpg,.jpeg,.png">
+                    </div>
+                    <div class="form-group">
+                        <label>Pharmacy Name *</label>
+                        <input type="text" name="pharmacy_name">
+                    </div>
+                    <div class="form-group">
+                        <label>Pharmacy Address *</label>
+                        <textarea name="pharmacy_address" rows="2"></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Aadhaar Number</label>
+                            <input type="text" name="aadhaar_number" maxlength="12" placeholder="12-digit Aadhaar">
+                        </div>
+                        <div class="form-group">
+                            <label>PAN Number</label>
+                            <input type="text" name="pan_number" maxlength="10" placeholder="e.g., ABCDE1234F">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Aadhaar Document</label>
+                            <input type="file" name="aadhaar_document" accept=".pdf,.jpg,.jpeg,.png">
+                        </div>
+                        <div class="form-group">
+                            <label>PAN Document</label>
+                            <input type="file" name="pan_document" accept=".pdf,.jpg,.jpeg,.png">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Qualification</label>
+                            <input type="text" name="qualification" placeholder="e.g., B.Pharm, M.Pharm">
+                        </div>
+                        <div class="form-group">
+                            <label>Years of Experience</label>
+                            <input type="number" name="experience_years" min="0" value="0">
+                        </div>
+                    </div>
+                    <div class="approval-notice">
+                        ⚠️ Your account will be reviewed by admin before activation. This usually takes 24-48 hours.
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Address</label>
+                    <textarea name="address" rows="2"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>City</label>
+                        <input type="text" name="city">
+                    </div>
+                    <div class="form-group">
+                        <label>State</label>
+                        <input type="text" name="state">
+                    </div>
+                    <div class="form-group">
+                        <label>Pincode</label>
+                        <input type="text" name="pincode">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary full-width">Create Account</button>
+            </form>
+        </div>
+
+        <div id="message" class="auth-message"></div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .auth-section {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding-top: 150px;
+        padding-bottom: 50px;
+    }
+
+    .auth-container {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 50px;
+        max-width: 600px;
+        width: 100%;
+        backdrop-filter: blur(10px);
+    }
+
+    .auth-tabs {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 30px;
+    }
+
+    .auth-tab {
+        flex: 1;
+        padding: 15px;
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: rgba(255, 255, 255, 0.6);
+        cursor: pointer;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s;
+    }
+
+    .auth-tab.active {
+        background: var(--vaidya-gold);
+        color: #000;
+        border-color: var(--vaidya-gold);
+    }
+
+    .auth-form h2 {
+        font-size: 1.8rem;
+        margin-bottom: 10px;
+    }
+
+    .auth-subtitle {
+        color: rgba(255, 255, 255, 0.6);
+        margin-bottom: 30px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 0.9rem;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        padding: 15px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        color: #fff;
+        font-size: 1rem;
+    }
+
+    .form-row {
+        display: flex;
+        gap: 20px;
+    }
+
+    .form-row .form-group {
+        flex: 1;
+    }
+
+    .full-width {
+        width: 100%;
+    }
+
+    .auth-message {
+        margin-top: 20px;
+        padding: 15px;
+        border-radius: 8px;
+        display: none;
+    }
+
+    .auth-message.error {
+        display: block;
+        background: rgba(255, 0, 0, 0.2);
+        color: #ff6b6b;
+    }
+
+    .auth-message.success {
+        display: block;
+        background: rgba(0, 255, 0, 0.2);
+        color: #69db7c;
+    }
+
+    .role-section-header {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--vaidya-gold, #d4af37);
+        margin: 20px 0 15px 0;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .approval-notice {
+        background: rgba(255, 193, 7, 0.2);
+        border: 1px solid rgba(255, 193, 7, 0.4);
+        color: #ffc107;
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 15px;
+        font-size: 0.9rem;
+    }
+
+    input[type="file"] {
+        padding: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function showTab(tab) {
+        document.getElementById('login-form').style.display = tab === 'login' ? 'block' : 'none';
+        document.getElementById('register-form').style.display = tab === 'register' ? 'block' : 'none';
+        document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+        event.target.classList.add('active');
+    }
+
+    function toggleRoleFields() {
+        const role = document.getElementById('userRole').value;
+        document.getElementById('pharmacistFields').style.display = role === 'pharmacist' ? 'block' : 'none';
+    }
+
+    // Handle form submissions via API
+    document.getElementById('loginForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        const data = Object.fromEntries(formData);
+
+        try {
+            const response = await fetch('/api/auth/login/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': data.csrfmiddlewaretoken
+                },
+                body: JSON.stringify(data)
+            });
+            const result = await response.json();
+
+            if (response.ok) {
+                window.location.href = '/dashboard/';
+            } else {
+                showMessage(result.error || 'Login failed', 'error');
+            }
+        } catch (error) {
+            showMessage('Network error', 'error');
+        }
+    });
+
+    document.getElementById('registerForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        const role = formData.get('role');
+
+        try {
+            let response;
+
+            if (role === 'pharmacist') {
+                // Pharmacist registration with file uploads
+                response = await fetch('/api/pharmacist/register/', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                    },
+                    body: formData  // Send as FormData for file uploads
+                });
+            } else {
+                // Patient registration (JSON)
+                const data = Object.fromEntries(formData);
+                response = await fetch('/api/auth/register/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': data.csrfmiddlewaretoken
+                    },
+                    body: JSON.stringify(data)
+                });
+            }
+
+            const result = await response.json();
+
+            if (response.ok) {
+                if (role === 'pharmacist') {
+                    showMessage('Registration submitted! Your account is pending admin approval. You will be notified within 24-48 hours.', 'success');
+                } else {
+                    showMessage('Registration successful! Please login.', 'success');
+                }
+                showTab('login');
+            } else {
+                showMessage(JSON.stringify(result), 'error');
+            }
+        } catch (error) {
+            showMessage('Network error', 'error');
+        }
+    });
+
+    function showMessage(msg, type) {
+        const el = document.getElementById('message');
+        el.textContent = msg;
+        el.className = 'auth-message ' + type;
+    }
+</script>
+{% endblock %}

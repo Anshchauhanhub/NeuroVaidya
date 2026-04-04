@@ -1,0 +1,26 @@
+Django>=4.2
+django-filter>=24.2
+djangorestframework>=3.14
+django-cors-headers>=4.3
+Pillow>=10.0
+razorpay>=1.4
+python-dotenv>=1.0
+
+# Production
+gunicorn>=21.0
+whitenoise>=6.6
+
+# Telemedicine Features
+channels>=4.0
+channels-redis>=4.1
+reportlab>=4.0
+cryptography>=41.0
+daphne
+
+# AI Chat Dependencies
+requests>=2.31
+groq>=0.11.0
+
+# Scraper Dependencies
+undetected-chromedriver>=3.5
+beautifulsoup4>=4.12

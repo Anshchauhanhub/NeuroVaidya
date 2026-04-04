@@ -1,0 +1,387 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<section class="section dashboard-section">
+    <div class="dashboard-container">
+        <aside class="dashboard-sidebar">
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar">U</div>
+                <h3 id="userName">Loading...</h3>
+                <p id="userRole">-</p>
+            </div>
+            <nav class="dashboard-nav">
+                <a href="#" class="nav-item active" onclick="showSection('profile')">
+                    <span class="nav-icon">👤</span> My Profile
+                </a>
+                <a href="#" class="nav-item" onclick="showSection('orders')">
+                    <span class="nav-icon">📦</span> My Orders
+                </a>
+                <a href="#" class="nav-item" onclick="showSection('wallet')">
+                    <span class="nav-icon">🪙</span> Dava Wallet
+                </a>
+                <a href="#" class="nav-item" onclick="showSection('patients')">
+                    <span class="nav-icon">👥</span> Patients
+                </a>
+                <a href="#" class="nav-item" onclick="showSection('refer')">
+                    <span class="nav-icon">₹</span> Refer and Earn
+                </a>
+                <a href="#" class="nav-item" onclick="showSection('notifications')">
+                    <span class="nav-icon">🔔</span> Notifications
+                </a>
+
+                <a href="#" class="nav-item" onclick="showSection('help')">
+                    <span class="nav-icon">📞</span> Need Help?
+                </a>
+
+                <form action="{% url 'logout' %}" method="post"
+                    style="margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px;">
+                    {% csrf_token %}
+                    <button type="submit" class="nav-item"
+                        style="width: 100%; text-align: left; background: none; border: none; cursor: pointer; color: #ff6b6b;">
+                        <span class="nav-icon">🚪</span> Logout
+                    </button>
+                </form>
+
+
+            </nav>
+        </aside>
+
+        <main class="dashboard-main">
+            <!-- Orders Section -->
+            <div id="orders-section" class="dashboard-section-content">
+                <h2>My Orders</h2>
+                <div id="ordersList" class="orders-list">Loading...</div>
+            </div>
+
+
+
+            <!-- Profile Section -->
+            <div id="profile-section" class="dashboard-section-content" style="display:none;">
+                <h2>Profile Settings</h2>
+                <form id="profileForm" class="profile-form">
+                    {% csrf_token %}
+                    <div class="form-row">
+                        <div class="form-group"><label>Username</label><input type="text" name="username"
+                                id="profileUsername" readonly></div>
+                        <div class="form-group"><label>Email</label><input type="email" name="email" id="profileEmail">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Phone</label><input type="tel" name="phone" id="profilePhone">
+                        </div>
+                        <div class="form-group"><label>City</label><input type="text" name="city" id="profileCity">
+                        </div>
+                    </div>
+                    <div class="form-group"><label>Address</label><textarea name="address"
+                            id="profileAddress"></textarea></div>
+                    <button type="submit" class="btn-primary">Update Profile</button>
+                </form>
+            </div>
+
+            <!-- Dava Wallet Section -->
+            <div id="wallet-section" class="dashboard-section-content" style="display:none;">
+                <h2>Dava Wallet</h2>
+                <div
+                    style="text-align: center; padding: 50px; background: rgba(255,255,255,0.05); border-radius: 12px;">
+                    <span style="font-size: 3rem;">🪙</span>
+                    <h3>Wallet Balance: ₹0.00</h3>
+                    <p style="color: rgba(255,255,255,0.6);">Add money to your wallet for faster checkouts.</p>
+                    <button class="btn-primary" style="margin-top: 15px;">Add Money</button>
+                </div>
+            </div>
+
+            <!-- Patients Section -->
+            <div id="patients-section" class="dashboard-section-content" style="display:none;">
+                <h2>Patients</h2>
+                <div
+                    style="text-align: center; padding: 50px; background: rgba(255,255,255,0.05); border-radius: 12px;">
+                    <span style="font-size: 3rem;">👥</span>
+                    <h3>Manage Patients</h3>
+                    <p style="color: rgba(255,255,255,0.6);">Add family members or patients to manage their health
+                        records.</p>
+                    <button class="btn-primary" style="margin-top: 15px;">Add Patient</button>
+                </div>
+            </div>
+
+            <!-- Refer & Earn Section -->
+            <div id="refer-section" class="dashboard-section-content" style="display:none;">
+                <h2>Refer and Earn</h2>
+                <div
+                    style="text-align: center; padding: 50px; background: rgba(255,255,255,0.05); border-radius: 12px;">
+                    <span style="font-size: 3rem;">🎁</span>
+                    <h3>Invite Friends & Earn</h3>
+                    <p style="color: rgba(255,255,255,0.6);">Share your referral code and earn rewards on their first
+                        order.</p>
+                    <div
+                        style="margin: 20px 0; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 8px; display: inline-block;">
+                        <code style="font-size: 1.2rem; color: var(--vaidya-gold);">NEURO2026</code>
+                    </div>
+                    <br>
+                    <button class="btn-primary">Copy Code</button>
+                </div>
+            </div>
+
+            <!-- Notifications Section -->
+            <div id="notifications-section" class="dashboard-section-content" style="display:none;">
+                <h2>Notifications</h2>
+                <div style="padding: 20px; background: rgba(255,255,255,0.05); border-radius: 12px;">
+                    <p style="color: rgba(255,255,255,0.6); text-align: center;">No new notifications.</p>
+                </div>
+            </div>
+
+            <!-- Help Section -->
+            <div id="help-section" class="dashboard-section-content" style="display:none;">
+                <h2>Need Help?</h2>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div
+                        style="padding: 30px; background: rgba(255,255,255,0.05); border-radius: 12px; text-align: center;">
+                        <span style="font-size: 2rem;">📞</span>
+                        <h3>Call Support</h3>
+                        <p>Available 24/7 for emergencies</p>
+                        <a href="tel:1800-123-4567"
+                            style="color: var(--vaidya-gold); text-decoration: none;">1800-123-4567</a>
+                    </div>
+                    <div
+                        style="padding: 30px; background: rgba(255,255,255,0.05); border-radius: 12px; text-align: center;">
+                        <span style="font-size: 2rem;">✉️</span>
+                        <h3>Email Us</h3>
+                        <p>Get response within 24 hours</p>
+                        <a href="mailto:support@neurovaidya.com"
+                            style="color: var(--vaidya-gold); text-decoration: none;">support@neurovaidya.com</a>
+                    </div>
+                </div>
+            </div>
+
+
+        </main>
+    </div>
+
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .dashboard-section {
+        padding-top: 100px;
+        min-height: 100vh;
+    }
+
+    .dashboard-container {
+        display: grid;
+        grid-template-columns: 250px 1fr;
+        gap: 40px;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .dashboard-sidebar {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 16px;
+        padding: 30px;
+        height: fit-content;
+        position: sticky;
+        top: 100px;
+    }
+
+    .user-info {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .user-avatar {
+        width: 80px;
+        height: 80px;
+        background: var(--vaidya-gold);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0 auto 15px;
+    }
+
+    .dashboard-nav .nav-item {
+        display: block;
+        padding: 12px 15px;
+        color: rgba(255, 255, 255, 0.7);
+        text-decoration: none;
+        border-radius: 8px;
+        margin-bottom: 5px;
+        transition: all 0.3s;
+    }
+
+    .dashboard-nav .nav-item:hover,
+    .dashboard-nav .nav-item.active {
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+    }
+
+    .dashboard-main {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 16px;
+        padding: 40px;
+    }
+
+    .dashboard-main h2 {
+        margin-bottom: 30px;
+    }
+
+    .orders-list {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .order-card {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 12px;
+        padding: 25px;
+    }
+
+    .order-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 15px;
+    }
+
+    .order-status {
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+    }
+
+    .order-status.pending {
+        background: rgba(255, 165, 0, 0.2);
+        color: orange;
+    }
+
+    .order-status.delivered {
+        background: rgba(0, 255, 0, 0.2);
+        color: #69db7c;
+    }
+
+    .profile-form .form-group {
+        margin-bottom: 20px;
+    }
+
+    .profile-form label {
+        display: block;
+        margin-bottom: 8px;
+        color: rgba(255, 255, 255, 0.8);
+    }
+
+    .profile-form input,
+    .profile-form textarea,
+    .profile-form select {
+        width: 100%;
+        padding: 12px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        color: #fff;
+    }
+
+    .form-row {
+        display: flex;
+        gap: 20px;
+    }
+
+    .form-row .form-group {
+        flex: 1;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    let currentUser = null;
+
+    async function loadProfile() {
+        const response = await fetch('/api/auth/profile/');
+        if (response.status === 401) { window.location.href = '/login/'; return; }
+        currentUser = await response.json();
+
+        document.getElementById('userAvatar').textContent = currentUser.username[0].toUpperCase();
+        document.getElementById('userName').textContent = currentUser.username;
+        const roleLabels = { patient: 'Patient', pharmacist: 'Pharmacist', admin: 'Admin' };
+        document.getElementById('userRole').textContent = roleLabels[currentUser.role] || currentUser.role;
+
+        if (currentUser.role === 'pharmacist') {
+            document.getElementById('pharmacistMenu').style.display = 'block';
+        }
+
+        // Fill profile form
+        document.getElementById('profileUsername').value = currentUser.username;
+        document.getElementById('profileEmail').value = currentUser.email || '';
+        document.getElementById('profilePhone').value = currentUser.phone || '';
+        document.getElementById('profileCity').value = currentUser.city || '';
+        document.getElementById('profileAddress').value = currentUser.address || '';
+    }
+
+    async function loadOrders() {
+        const response = await fetch('/api/orders/');
+        const orders = await response.json();
+
+        if (orders.length === 0) {
+            document.getElementById('ordersList').innerHTML = '<p>No orders yet. <a href="/catalog/">Browse medicines</a></p>';
+            return;
+        }
+
+        document.getElementById('ordersList').innerHTML = orders.map(order => `
+        <div class="order-card">
+            <div class="order-header">
+                <div>
+                    <strong>${order.order_number}</strong>
+                    <span style="color:rgba(255,255,255,0.5);margin-left:15px;">${new Date(order.created_at).toLocaleDateString()}</span>
+                </div>
+                <span class="order-status ${order.status}">${order.status_display}</span>
+            </div>
+            <p>${order.items.length} item(s) • Total: ₹${order.total_amount}</p>
+        </div>
+    `).join('');
+    }
+
+    function getCookie(name) { return document.cookie.split('; ').find(row => row.startsWith(name + '=')).split('=')[1]; }
+
+
+
+    // Update showSection to load section data
+    const originalShowSection = showSection;
+    function showSection(section) {
+        document.querySelectorAll('.dashboard-section-content').forEach(el => el.style.display = 'none');
+        document.getElementById(section + '-section').style.display = 'block';
+        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+
+        // Find corresponding nav item and set active
+        const navItem = Array.from(document.querySelectorAll('.nav-item')).find(el => el.getAttribute('onclick')?.includes(`'${section}'`));
+        if (navItem) navItem.classList.add('active');
+
+        if (section === 'consultations') return; // removed
+        if (section === 'prescriptions') return; // removed
+
+        // Update URL hash without scrolling
+        history.pushState(null, null, '#' + section);
+    }
+
+    // Check URL hash on load
+    function loadSectionFromHash() {
+        const hash = window.location.hash.substring(1);
+        if (hash) {
+            showSection(hash);
+        } else {
+            showSection('profile'); // Default
+        }
+    }
+
+    loadProfile();
+    loadOrders();
+    loadSectionFromHash();
+
+    // Handle hash change
+    window.addEventListener('hashchange', loadSectionFromHash);
+</script>
+{% endblock %}

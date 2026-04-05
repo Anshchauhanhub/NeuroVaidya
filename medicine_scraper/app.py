@@ -32,6 +32,21 @@ def run_scraper(scraper, query, limit):
 def health_check():
     return jsonify({"status": "healthy", "service": "medicine_scraper"}), 200
 
+@app.route("/debug", methods=["GET"])
+def debug_info():
+    """Environment diagnostics for Render/Linux."""
+    import os
+    import shutil
+    chrome_path = "/usr/bin/google-chrome"
+    return jsonify({
+        "os": os.name,
+        "platform": __import__("platform").system(),
+        "chrome_exists": os.path.exists(chrome_path),
+        "chrome_in_path": shutil.which("google-chrome") is not None,
+        "working_dir": os.getcwd(),
+        "files": os.listdir(".")
+    }), 200
+
 @app.route("/api/search", methods=["GET"])
 def search_medicines():
     query = request.args.get("q", "").strip().lower()

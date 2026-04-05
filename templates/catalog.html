@@ -321,7 +321,10 @@
                 try {
                     console.log(`DEBUG: Fetching live results for '${query}'...`);
                     const response = await fetch(`/api/search/external/live/?q=${encodeURIComponent(query)}`);
-                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    if (!response.ok) {
+                        const errData = await response.json().catch(() => ({}));
+                        throw new Error(errData.details || `HTTP ${response.status}`);
+                    }
                     
                     const data = await response.json();
                     console.log(`DEBUG: API response received:`, data);

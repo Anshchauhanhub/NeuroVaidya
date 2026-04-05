@@ -80,11 +80,14 @@ def search_medicines():
                 except Exception as exc:
                     print(f"{scraper.SITE_NAME} generated an exception: {exc}")
 
-    # Store in Cache
-    _CACHE[query] = {
-        "timestamp": now,
-        "results": all_results
-    }
+    # Store in Cache only if we found results (don't cache empty results or errors)
+    if all_results:
+        _CACHE[query] = {
+            "timestamp": now,
+            "results": all_results
+        }
+    else:
+        print(f"DEBUG: No results found for '{query}', not caching.")
 
     return jsonify({
         "query": query,

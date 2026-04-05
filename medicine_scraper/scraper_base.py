@@ -1,4 +1,5 @@
 import time
+import os
 import gc
 from dataclasses import dataclass, asdict
 from typing import List, Optional
@@ -53,8 +54,8 @@ class BaseScraper:
         options.add_argument("--memory-pressure-off")
         options.add_argument("--disk-cache-size=0")
         
-        # Stop waiting for tracking scripts/ads once main content is ready
-        options.page_load_strategy = 'eager'
+        # Use default 'normal' load strategy for better reliability
+        # options.page_load_strategy = 'eager'
         
         # Disable images for faster loading and less memory
         prefs = {"profile.managed_default_content_settings.images": 2}

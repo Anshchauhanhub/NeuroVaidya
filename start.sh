@@ -7,7 +7,7 @@ echo "Starting NeuroVaidya Services..."
 echo "Starting Flask scraper on internal port 5001 (binding to 127.0.0.1)..."
 cd medicine_scraper
 # Run gunicorn in background but NOT as a daemon so logs are visible
-gunicorn app:app --bind 127.0.0.1:5001 --access-logfile - --error-logfile - &
+gunicorn app:app --bind 127.0.0.1:5001 --timeout 120 --access-logfile - --error-logfile - &
 SCRAPER_PID=$!
 echo "Flask scraper PID: $SCRAPER_PID"
 cd ..

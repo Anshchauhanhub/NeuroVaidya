@@ -107,7 +107,7 @@ class LiveMarketSearchView(APIView):
             # Route to local flask scraper service running inside the same container environment
             # Increased timeout for Render sequential mode
             # Using 127.0.0.1 which is standard for local inter-process communication
-            resp = requests.get(f"http://127.0.0.1:5001/api/search?q={query}", timeout=60)
+            resp = requests.get(f"http://127.0.0.1:5001/api/search?q={query}", timeout=120)
             # Forward the JSON response directly
             return Response(resp.json(), status=resp.status_code)
         except requests.exceptions.Timeout:

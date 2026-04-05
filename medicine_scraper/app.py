@@ -4,9 +4,15 @@ from scrapers import (
     Tata1mgScraper, PharmEasyScraper
 )
 import concurrent.futures
+import time
 
 app = Flask(__name__)
 CORS(app)
+
+# Simple in-memory cache
+# Format: { "query": { "timestamp": float, "results": list } }
+_CACHE = {}
+_CACHE_EXPIRY_SECONDS = 3600  # 1 hour
 
 SCRAPERS = [
     Tata1mgScraper(),
@@ -23,11 +29,24 @@ def run_scraper(scraper, query, limit):
 
 @app.route("/api/search", methods=["GET"])
 def search_medicines():
-    query = request.args.get("q", "")
+    query = request.args.get("q", "").strip().lower()
     limit = int(request.args.get("limit", 5))
 
     if not query:
         return jsonify({"error": "Query parameter 'q' is required"}), 400
+
+    # Cache Check
+    now = time.time()
+    if query in _CACHE:
+        entry = _CACHE[query]
+        if now - entry["timestamp"] < _CACHE_EXPIRY_SECONDS:
+            print(f"DEBUG: Returning cached results for '{query}'")
+            return jsonify({
+                "query": query,
+                "count": len(entry["results"]),
+                "results": entry["results"],
+                "cached": True
+            })
 
     all_results = []
     
@@ -42,10 +61,17 @@ def search_medicines():
             except Exception as exc:
                 print(f"{scraper.SITE_NAME} generated an exception: {exc}")
 
+    # Store in Cache
+    _CACHE[query] = {
+        "timestamp": now,
+        "results": all_results
+    }
+
     return jsonify({
         "query": query,
         "count": len(all_results),
-        "results": all_results
+        "results": all_results,
+        "cached": False
     })
 
 if __name__ == "__main__":

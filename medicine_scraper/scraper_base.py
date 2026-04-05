@@ -9,6 +9,8 @@ from webdriver_manager.chrome import ChromeDriverManager
 import logging
 
 logging.basicConfig(level=logging.INFO)
+# Cache the installer result to avoid checking for updates on every search request
+_CHROMEDRIVER_PATH = None
 logger = logging.getLogger(__name__)
 
 @dataclass
@@ -36,44 +38,53 @@ class BaseScraper:
         self.driver = None
 
     def _init_selenium(self):
-        """Initializes a headless Chrome WebDriver."""
+        """Initializes a stealthy headless Chrome WebDriver."""
         if self.driver is not None:
             return
 
-        try:
-            import undetected_chromedriver as uc
-            options = uc.ChromeOptions()
-            options.headless = True
-            
-            # Additional arguments for stability
-            options.add_argument("--no-sandbox")
-            options.add_argument("--disable-dev-shm-usage")
-            
-            self.driver = uc.Chrome(options=options)
-            self.driver.set_page_load_timeout(20)
-            return
-        except ImportError:
-            logger.warning("undetected-chromedriver not found, falling back to standard selenium")
-        except Exception as e:
-            logger.warning(f"uc.Chrome failed: {e}, falling back to standard selenium")
-
         options = Options()
+        # Use new headless mode for better compatibility and stealth
         options.add_argument("--headless=new")
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
+        
+        # Anti-detection: disable automation flags
         options.add_argument("--disable-blink-features=AutomationControlled")
-        options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+        options.add_experimental_option("excludeSwitches", ["enable-automation"])
+        options.add_experimental_option("useAutomationExtension", False)
+        
+        # Custom User-Agent to avoid generic bot signatures
+        user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+        options.add_argument(f"user-agent={user_agent}")
         
         # Suppress webdriver manager logs
         import os
         os.environ["WDM_LOG"] = "0"
         
+        global _CHROMEDRIVER_PATH
         try:
-            self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
-            self.driver.set_page_load_timeout(20)
+            if not _CHROMEDRIVER_PATH:
+                logger.info(f"[{self.SITE_NAME}] Checking for ChromeDriver updates...")
+                _CHROMEDRIVER_PATH = ChromeDriverManager().install()
+            
+            # Using the cached ChromeDriver path for speed
+            self.driver = webdriver.Chrome(service=Service(_CHROMEDRIVER_PATH), options=options)
+            
+            # Stealth: Remove navigator.webdriver property
+            self.driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {
+                "source": """
+                    Object.defineProperty(navigator, 'webdriver', {
+                        get: () => undefined
+                    })
+                """
+            })
+            
+            self.driver.set_page_load_timeout(25)
+            logger.info(f"[{self.SITE_NAME}] Stealth Selenium initialized successfully")
         except Exception as e:
-            logger.error(f"Failed to initialize Selenium for {self.SITE_NAME}: {e}")
+            logger.error(f"Failed to initialize Stealth Selenium for {self.SITE_NAME}: {e}")
             self.driver = None
+
 
     def _quit_selenium(self):
         """Quits the WebDriver if it exists."""

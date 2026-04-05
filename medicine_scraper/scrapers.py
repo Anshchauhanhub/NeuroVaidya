@@ -22,13 +22,16 @@ class Tata1mgScraper(BaseScraper):
 
             logger.info(f"[{self.SITE_NAME}] Found {len(cards)} product cards")
 
-            for card in cards[:max_results]:
+            for i, card in enumerate(cards[:max_results]):
                 try:
+                    logger.debug(f"[{self.SITE_NAME}] Card {i} HTML snippet: {str(card)[:200]}...")
                     result = self._parse_card(card)
                     if result:
                         results.append(result)
+                    else:
+                        logger.warning(f"[{self.SITE_NAME}] Card {i} parsed to None (likely missing name)")
                 except Exception as e:
-                    logger.error(f"[{self.SITE_NAME}] Error parsing card: {e}")
+                    logger.error(f"[{self.SITE_NAME}] Error parsing card {i}: {e}")
                     continue
 
         except Exception as e:

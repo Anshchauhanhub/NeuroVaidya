@@ -22,5 +22,5 @@ requests>=2.31
 groq>=0.11.0
 
 # Scraper Dependencies
-undetected-chromedriver>=3.5
 beautifulsoup4>=4.12
+

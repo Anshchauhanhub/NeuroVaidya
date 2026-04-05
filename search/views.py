@@ -86,9 +86,12 @@ class LiveMarketSearchView(APIView):
         
         try:
             # Route to local flask scraper service running inside the same container environment
-            # Increased timeout to 60s to allow for full-page renders on external sites across sequential scrapers
+            # Increased timeout to 60s for Render sequential mode
             resp = requests.get(f"http://127.0.0.1:5000/api/search?q={query}", timeout=60)
             # Forward the JSON response directly
             return Response(resp.json(), status=resp.status_code)
+        except requests.exceptions.Timeout:
+            return Response({'error': 'Search timed out', 'details': 'The scraper took too long to respond. This can happen on first search; please try again.'}, status=status.HTTP_504_GATEWAY_TIMEOUT)
         except Exception as e:
-            return Response({'error': 'Live market search unavailable', 'details': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            logger.error(f"External search proxy error: {str(e)}")
+            return Response({'error': 'Live market search unavailable', 'details': f"Connection Error: Is the scraper running? ({str(e)})"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

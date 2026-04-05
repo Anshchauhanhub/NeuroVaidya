@@ -53,6 +53,13 @@ class BaseScraper:
         options.add_argument("--memory-pressure-off")
         options.add_argument("--disk-cache-size=0")
         
+        # Stop waiting for tracking scripts/ads once main content is ready
+        options.page_load_strategy = 'eager'
+        
+        # Disable images for faster loading and less memory
+        prefs = {"profile.managed_default_content_settings.images": 2}
+        options.add_experimental_option("prefs", prefs)
+        
         # Anti-detection: disable automation flags
         options.add_argument("--disable-blink-features=AutomationControlled")
         options.add_experimental_option("excludeSwitches", ["enable-automation"])
@@ -155,6 +162,6 @@ class BaseScraper:
         """Parses HTML into a BeautifulSoup object."""
         return BeautifulSoup(html, "lxml")
 
-    def search(self, query: str, max_results: int = 10) -> List[MedicineResult]:
+    def search(self, query: str, max_results: int = 5, wait_seconds: int = 3) -> List[MedicineResult]:
         """Must be implemented by subclasses."""
         raise NotImplementedError

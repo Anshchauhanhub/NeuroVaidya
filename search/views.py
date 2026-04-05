@@ -85,7 +85,7 @@ class LiveMarketStatusView(APIView):
     """Checks the health of the background scraper service."""
     def get(self, request):
         try:
-            resp = requests.get("http://127.0.0.1:5000/health", timeout=5)
+            resp = requests.get("http://127.0.0.1:5001/health", timeout=5)
             # Forward the scraper health response
             return Response(resp.json(), status=resp.status_code)
         except Exception as e:
@@ -107,7 +107,7 @@ class LiveMarketSearchView(APIView):
             # Route to local flask scraper service running inside the same container environment
             # Increased timeout for Render sequential mode
             # Using 127.0.0.1 which is standard for local inter-process communication
-            resp = requests.get(f"http://127.0.0.1:5000/api/search?q={query}", timeout=60)
+            resp = requests.get(f"http://127.0.0.1:5001/api/search?q={query}", timeout=60)
             # Forward the JSON response directly
             return Response(resp.json(), status=resp.status_code)
         except requests.exceptions.Timeout:

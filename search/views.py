@@ -73,20 +73,32 @@ class AIChatView(APIView):
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-class LiveMarketSearchView(APIView):
-    """Proxy endpoint to the local Flask scraper running on port 5000."""
-    permission_classes = [AllowAny]
-    
+class LiveMarketStatusView(APIView):
+    """Checks the health of the background scraper service."""
     def get(self, request):
-        query = request.query_params.get('q', '')
-        import requests
-        
+        try:
+            resp = requests.get("http://127.0.0.1:5000/health", timeout=5)
+            # Forward the scraper health response
+            return Response(resp.json(), status=resp.status_code)
+        except Exception as e:
+            return Response({
+                "status": "unhealthy", 
+                "service": "medicine_scraper",
+                "error": str(e),
+                "tip": "Check if Gunicorn started correctly in start.sh"
+            }, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+
+class LiveMarketSearchView(APIView):
+    """Proxy view that calls the Flask scraper service."""
+    def get(self, request):
+        query = request.query_params.get('q', '').strip()
         if not query:
-            return Response({'error': 'Query parameter required.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Query parameter q is required'}, status=status.HTTP_400_BAD_REQUEST)
         
         try:
             # Route to local flask scraper service running inside the same container environment
-            # Increased timeout to 60s for Render sequential mode
+            # Increased timeout for Render sequential mode
+            # Using 127.0.0.1 which is standard for local inter-process communication
             resp = requests.get(f"http://127.0.0.1:5000/api/search?q={query}", timeout=60)
             # Forward the JSON response directly
             return Response(resp.json(), status=resp.status_code)
@@ -94,4 +106,4 @@ class LiveMarketSearchView(APIView):
             return Response({'error': 'Search timed out', 'details': 'The scraper took too long to respond. This can happen on first search; please try again.'}, status=status.HTTP_504_GATEWAY_TIMEOUT)
         except Exception as e:
             logger.error(f"External search proxy error: {str(e)}")
-            return Response({'error': 'Live market search unavailable', 'details': f"Connection Error: Is the scraper running? ({str(e)})"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({'error': 'Live market search unavailable', 'details': f"Connection Error: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

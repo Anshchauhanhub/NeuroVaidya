@@ -4,11 +4,12 @@ set -e
 echo "Starting NeuroVaidya Services..."
 
 # 1. Start the Flask Scraper in the background
-echo "Starting Flask scraper on port 5000..."
+echo "Starting Flask scraper on port 5000 (binding to 0.0.0.0)..."
 cd medicine_scraper
 # Run gunicorn in background but NOT as a daemon so logs are visible
-gunicorn app:app --bind 127.0.0.1:5000 --access-logfile - --error-logfile - &
+gunicorn app:app --bind 0.0.0.0:5000 --access-logfile - --error-logfile - &
 SCRAPER_PID=$!
+echo "Flask scraper PID: $SCRAPER_PID"
 cd ..
 
 # 2. Run Django Setup

@@ -123,6 +123,8 @@ def warmup_scrapers():
         except Exception as e:
             print(f"DEBUG: Scraper warmup failed (this is expected in some build environments): {e}")
 
+# Pre-warm scrapers during startup (even when run via gunicorn)
+warmup_scrapers()
+
 if __name__ == "__main__":
-    warmup_scrapers()
     app.run(port=5000, debug=True)

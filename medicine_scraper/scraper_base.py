@@ -79,8 +79,13 @@ class BaseScraper:
         global _CHROMEDRIVER_PATH
         try:
             if not _CHROMEDRIVER_PATH:
-                logger.info(f"[{self.SITE_NAME}] Initializing ChromeDriver for {os.name}...")
-                _CHROMEDRIVER_PATH = ChromeDriverManager().install()
+                # Use pre-installed driver on Render/Linux to save 20s startup time
+                if os.name == 'posix' and os.path.exists("/usr/local/bin/chromedriver"):
+                    _CHROMEDRIVER_PATH = "/usr/local/bin/chromedriver"
+                    logger.info(f"[{self.SITE_NAME}] Using pre-installed ChromeDriver")
+                else:
+                    logger.info(f"[{self.SITE_NAME}] Initializing ChromeDriver (via Manager)...")
+                    _CHROMEDRIVER_PATH = ChromeDriverManager().install()
             
             # Using the cached ChromeDriver path for speed
             self.driver = webdriver.Chrome(service=Service(_CHROMEDRIVER_PATH), options=options)

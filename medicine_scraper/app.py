@@ -111,5 +111,18 @@ def search_medicines():
         "cached": False
     })
 
+def warmup_scrapers():
+    """Warms up the Chrome driver on startup to save time on the first request."""
+    if os.environ.get("RENDER") == "true":
+        print("DEBUG: Pre-warming scraper environment...")
+        try:
+            s = Tata1mgScraper()
+            s._init_selenium()
+            s._quit_selenium()
+            print("DEBUG: Scraper environment warmed up successfully.")
+        except Exception as e:
+            print(f"DEBUG: Scraper warmup failed (this is expected in some build environments): {e}")
+
 if __name__ == "__main__":
+    warmup_scrapers()
     app.run(port=5000, debug=True)

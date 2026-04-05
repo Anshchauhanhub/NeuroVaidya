@@ -1,4 +1,5 @@
 import time
+import gc
 from dataclasses import dataclass, asdict
 from typing import List, Optional
 from bs4 import BeautifulSoup
@@ -47,6 +48,10 @@ class BaseScraper:
         options.add_argument("--headless=new")
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
+        options.add_argument("--disable-gpu")
+        options.add_argument("--disable-software-rasterizer")
+        options.add_argument("--memory-pressure-off")
+        options.add_argument("--disk-cache-size=0")
         
         # Anti-detection: disable automation flags
         options.add_argument("--disable-blink-features=AutomationControlled")
@@ -87,13 +92,16 @@ class BaseScraper:
 
 
     def _quit_selenium(self):
-        """Quits the WebDriver if it exists."""
+        """Quits the WebDriver and forces garbage collection."""
         if self.driver:
             try:
                 self.driver.quit()
             except Exception:
                 pass
             self.driver = None
+        
+        # Explicitly collect garbage to free up memory on Render
+        gc.collect()
             
     def _get_valid_image(self, img_el) -> str:
         """Extract a real product image from an img element, ignoring placeholders."""

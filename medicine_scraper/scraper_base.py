@@ -54,8 +54,8 @@ class BaseScraper:
         options.add_argument("--memory-pressure-off")
         options.add_argument("--disk-cache-size=0")
         
-        # Use default 'normal' load strategy for better reliability
-        # options.page_load_strategy = 'eager'
+        # Use eager load strategy for much faster page rendering (ignores blocking images/css)
+        options.page_load_strategy = 'eager'
         
         # Disable images for faster loading and less memory
         prefs = {"profile.managed_default_content_settings.images": 2}

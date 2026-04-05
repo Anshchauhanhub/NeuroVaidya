@@ -1,3 +1,4 @@
+import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from scrapers import (
@@ -50,15 +51,30 @@ def search_medicines():
 
     all_results = []
     
-    # Run scrapers one by one to save memory on Render
-    # This prevents multiple Chrome processes from running at the same time
-    for scraper in SCRAPERS:
-        try:
-            print(f"DEBUG: Running {scraper.SITE_NAME} scraper...")
-            data = run_scraper(scraper, query, limit)
-            all_results.extend(data)
-        except Exception as exc:
-            print(f"{scraper.SITE_NAME} generated an exception: {exc}")
+    # Smart Execution: use parallel scraping locally (Fast), sequential on Render (Memory-Safe)
+    IS_RENDER = os.environ.get("RENDER") == "true"
+    
+    if IS_RENDER:
+        # Run scrapers one by one to save memory on Render
+        for scraper in SCRAPERS:
+            try:
+                print(f"DEBUG: Running {scraper.SITE_NAME} scraper (Sequential Mode)...")
+                data = run_scraper(scraper, query, limit)
+                all_results.extend(data)
+            except Exception as exc:
+                print(f"{scraper.SITE_NAME} generated an exception: {exc}")
+    else:
+        # Run scrapers in parallel for maximum speed on local machine
+        with concurrent.futures.ThreadPoolExecutor(max_workers=len(SCRAPERS)) as executor:
+            print(f"DEBUG: Running scrapers in Parallel Mode for speed...")
+            futures = {executor.submit(run_scraper, scraper, query, limit): scraper for scraper in SCRAPERS}
+            for future in concurrent.futures.as_completed(futures):
+                scraper = futures[future]
+                try:
+                    data = future.result()
+                    all_results.extend(data)
+                except Exception as exc:
+                    print(f"{scraper.SITE_NAME} generated an exception: {exc}")
 
     # Store in Cache
     _CACHE[query] = {

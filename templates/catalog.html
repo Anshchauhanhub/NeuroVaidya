@@ -319,13 +319,19 @@
                 }
 
                 try {
+                    console.log(`DEBUG: Fetching live results for '${query}'...`);
                     const response = await fetch(`/api/search/external/live/?q=${encodeURIComponent(query)}`);
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    
                     const data = await response.json();
+                    console.log(`DEBUG: API response received:`, data);
                     
                     if (data.results && data.results.length > 0) {
                         lastExternalResults = data.results;
                         const sorted = sortResults(lastExternalResults);
-                        externalGrid.innerHTML = renderMedicines(sorted, true);
+                        const html = renderMedicines(sorted, true);
+                        console.log(`DEBUG: Rendered HTML length: ${html.length}`);
+                        externalGrid.innerHTML = html;
                         
                         // 2. Save to LocalStorage Cache
                         const cacheEntry = {
@@ -333,6 +339,8 @@
                             results: data.results
                         };
                         localStorage.setItem(cacheKey, JSON.stringify(cacheEntry));
+                    } else if (data.error) {
+                         throw new Error(data.error + (data.details ? ": " + data.details : ""));
                     } else {
                         lastExternalResults = [];
                         externalGrid.innerHTML = '<div class="loading">No external results found</div>';
@@ -340,7 +348,7 @@
                 } catch (err) {
                     console.error("External search failed:", err);
                     lastExternalResults = [];
-                    if (externalGrid) externalGrid.innerHTML = '<div class="loading">Live search unavailable.</div>';
+                    if (externalGrid) externalGrid.innerHTML = `<div class="loading">Live search unavailable. <br><small style="color:rgba(255,100,100,0.7)">Error: ${err.message}</small></div>`;
                 }
             })();
         }

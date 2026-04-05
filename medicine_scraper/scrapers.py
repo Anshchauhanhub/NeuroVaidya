@@ -13,7 +13,7 @@ class Tata1mgScraper(BaseScraper):
         logger.info(f"[{self.SITE_NAME}] Searching: {url}")
 
         try:
-            html = self._selenium_get(url, wait_seconds=2)
+            html = self._selenium_get(url, wait_seconds=6)
             soup = self._get_soup(html)
 
             cards = soup.select("a.noAnchorColor.width-100")
@@ -131,7 +131,7 @@ class PharmEasyScraper(BaseScraper):
         logger.info(f"[{self.SITE_NAME}] Searching: {url}")
 
         try:
-            html = self._selenium_get(url, wait_seconds=2)
+            html = self._selenium_get(url, wait_seconds=6)
             soup = self._get_soup(html)
             
             cards = soup.select("a[class*='ProductCard_medicineUnitWrapper']")

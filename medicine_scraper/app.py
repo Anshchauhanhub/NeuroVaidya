@@ -50,16 +50,15 @@ def search_medicines():
 
     all_results = []
     
-    # Run scrapers concurrently using a thread pool
-    with concurrent.futures.ThreadPoolExecutor(max_workers=len(SCRAPERS)) as executor:
-        futures = {executor.submit(run_scraper, scraper, query, limit): scraper for scraper in SCRAPERS}
-        for future in concurrent.futures.as_completed(futures):
-            scraper = futures[future]
-            try:
-                data = future.result()
-                all_results.extend(data)
-            except Exception as exc:
-                print(f"{scraper.SITE_NAME} generated an exception: {exc}")
+    # Run scrapers one by one to save memory on Render
+    # This prevents multiple Chrome processes from running at the same time
+    for scraper in SCRAPERS:
+        try:
+            print(f"DEBUG: Running {scraper.SITE_NAME} scraper...")
+            data = run_scraper(scraper, query, limit)
+            all_results.extend(data)
+        except Exception as exc:
+            print(f"{scraper.SITE_NAME} generated an exception: {exc}")
 
     # Store in Cache
     _CACHE[query] = {

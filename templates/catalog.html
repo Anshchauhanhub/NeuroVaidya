@@ -295,13 +295,44 @@
         if (query.length > 2) {
             (async () => {
                 const externalGrid = document.getElementById('externalResultsGrid');
+                const cacheKey = `search_cache_${query}`;
+                const cacheExpiry = 4 * 60 * 60 * 1000; // 4 hours in ms
+                
+                // 1. Check LocalStorage Cache
+                const cachedData = localStorage.getItem(cacheKey);
+                if (cachedData) {
+                    try {
+                        const parsed = JSON.parse(cachedData);
+                        const now = new Date().getTime();
+                        if (now - parsed.timestamp < cacheExpiry) {
+                            console.log(`DEBUG: Serving results for '${query}' from LocalStorage`);
+                            lastExternalResults = parsed.results;
+                            const sorted = sortResults(lastExternalResults);
+                            externalGrid.innerHTML = renderMedicines(sorted, true);
+                            
+                            // Add a little "Cached" badge or just return
+                            return;
+                        }
+                    } catch (e) {
+                        localStorage.removeItem(cacheKey);
+                    }
+                }
+
                 try {
                     const response = await fetch(`/api/search/external/live/?q=${encodeURIComponent(query)}`);
                     const data = await response.json();
+                    
                     if (data.results && data.results.length > 0) {
                         lastExternalResults = data.results;
                         const sorted = sortResults(lastExternalResults);
                         externalGrid.innerHTML = renderMedicines(sorted, true);
+                        
+                        // 2. Save to LocalStorage Cache
+                        const cacheEntry = {
+                            timestamp: new Date().getTime(),
+                            results: data.results
+                        };
+                        localStorage.setItem(cacheKey, JSON.stringify(cacheEntry));
                     } else {
                         lastExternalResults = [];
                         externalGrid.innerHTML = '<div class="loading">No external results found</div>';

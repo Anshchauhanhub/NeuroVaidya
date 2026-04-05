@@ -69,14 +69,16 @@ class BaseScraper:
         user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
         options.add_argument(f"user-agent={user_agent}")
         
-        # Suppress webdriver manager logs
-        import os
-        os.environ["WDM_LOG"] = "0"
+        # Explicitly set Chrome binary path for Render (Linux)
+        if os.name == 'posix':
+            chrome_path = "/usr/bin/google-chrome"
+            if os.path.exists(chrome_path):
+                options.binary_location = chrome_path
         
         global _CHROMEDRIVER_PATH
         try:
             if not _CHROMEDRIVER_PATH:
-                logger.info(f"[{self.SITE_NAME}] Checking for ChromeDriver updates...")
+                logger.info(f"[{self.SITE_NAME}] Initializing ChromeDriver for {os.name}...")
                 _CHROMEDRIVER_PATH = ChromeDriverManager().install()
             
             # Using the cached ChromeDriver path for speed

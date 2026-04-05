@@ -28,6 +28,10 @@ def run_scraper(scraper, query, limit):
         print(f"Error in {scraper.SITE_NAME}: {e}")
         return []
 
+@app.route("/health", methods=["GET"])
+def health_check():
+    return jsonify({"status": "healthy", "service": "medicine_scraper"}), 200
+
 @app.route("/api/search", methods=["GET"])
 def search_medicines():
     query = request.args.get("q", "").strip().lower()

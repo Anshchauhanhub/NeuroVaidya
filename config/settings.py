@@ -19,9 +19,12 @@ SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-neurovaidya-dev-key-change
 DEBUG = os.getenv("DEBUG", "True").lower() in ("true", "1", "yes")
 
 # Allowed hosts
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1,0.0.0.0").split(",")
+# Add the Render dynamic hostname if available
 if "RENDER_EXTERNAL_HOSTNAME" in os.environ:
     ALLOWED_HOSTS.append(os.environ["RENDER_EXTERNAL_HOSTNAME"])
+# Fallback for some Render configurations
+ALLOWED_HOSTS.append(".onrender.com")
     
 CSRF_TRUSTED_ORIGINS = []
 if "RENDER_EXTERNAL_HOSTNAME" in os.environ:

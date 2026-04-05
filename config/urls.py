@@ -7,6 +7,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.views.generic import TemplateView
 from django.contrib.auth.views import LogoutView
+from search.views import home_view
 
 urlpatterns = [
     # Admin
@@ -21,9 +22,8 @@ urlpatterns = [
     path('api/orders/', include('orders.urls')),
     path('api/search/', include('search.urls')),
 
-    
-    # Frontend pages (will be served by Django templates)
-    path('', TemplateView.as_view(template_name='home.html'), name='home'),
+    # Frontend pages
+    path('', home_view, name='home'),
     path('login/', TemplateView.as_view(template_name='login.html'), name='login'),
     path('register/', TemplateView.as_view(template_name='register.html'), name='register'),
     path('catalog/', TemplateView.as_view(template_name='catalog.html'), name='catalog'),

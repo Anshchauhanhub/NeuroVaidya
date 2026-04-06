@@ -502,47 +502,8 @@ document.addEventListener('DOMContentLoaded', () => {
     updateCartBadge();
     setupDragAndDrop();
 
-    // ==========================================
-    // HERO FRAME SEQUENCE ANIMATION
-    // ==========================================
+    // Hero animation is now handled by React (static/dist/main.js)
 
-    const heroBg = document.getElementById('heroBg');
-
-    if (heroBg) {
-        const totalFrames = 130;
-        let currentFrame = 1;
-        let frames = [];
-        let isLoaded = false;
-
-        // Preload all frames
-        function preloadFrames() {
-            for (let i = 1; i <= totalFrames; i++) {
-                const img = document.createElement('img');
-                const frameNum = String(i).padStart(3, '0');
-                img.src = `/static/images/frames/ezgif-frame-${frameNum}.jpg`;
-                img.alt = `Frame ${i}`;
-                if (i === 1) img.classList.add('active');
-                frames.push(img);
-                heroBg.appendChild(img);
-            }
-            isLoaded = true;
-        }
-
-        // Animate through frames
-        function animateFrames() {
-            if (!isLoaded) return;
-
-            frames.forEach((frame, index) => {
-                frame.classList.remove('active');
-            });
-
-            frames[currentFrame - 1].classList.add('active');
-            currentFrame = currentFrame >= totalFrames ? 1 : currentFrame + 1;
-        }
-
-        preloadFrames();
-        setInterval(animateFrames, 50); // ~20fps for smooth animation
-    }
 
     // ==========================================
     // NAVIGATION SCROLL EFFECT

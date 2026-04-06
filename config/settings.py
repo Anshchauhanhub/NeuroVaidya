@@ -136,7 +136,7 @@ CORS_ALLOW_ALL_ORIGINS = DEBUG  # Only allow all in development
 
 # Login/Logout redirects
 LOGIN_URL = "/login/"
-LOGIN_REDIRECT_URL = "/dashboard/"
+LOGIN_REDIRECT_URL = "/catalog/"
 LOGOUT_REDIRECT_URL = "/"
 
 # Razorpay Configuration

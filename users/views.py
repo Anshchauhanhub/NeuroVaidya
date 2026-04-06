@@ -17,6 +17,10 @@ class RegisterView(generics.CreateAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
+        
+        # Log the user in after registration (auto-login)
+        login(request, user)
+        
         return Response({
             'message': 'Registration successful',
             'user': UserSerializer(user).data

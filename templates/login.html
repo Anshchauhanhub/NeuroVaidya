@@ -336,7 +336,7 @@
             const result = await response.json();
 
             if (response.ok) {
-                window.location.href = '/dashboard/';
+                window.location.href = '/catalog/';
             } else {
                 showMessage(result.error || 'Login failed', 'error');
             }
@@ -381,9 +381,8 @@
                 if (role === 'pharmacist') {
                     showMessage('Registration submitted! Your account is pending admin approval. You will be notified within 24-48 hours.', 'success');
                 } else {
-                    showMessage('Registration successful! Please login.', 'success');
+                    window.location.href = '/catalog/';
                 }
-                showTab('login');
             } else {
                 showMessage(JSON.stringify(result), 'error');
             }

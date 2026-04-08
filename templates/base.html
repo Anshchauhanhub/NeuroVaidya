@@ -19,7 +19,6 @@
         <nav class="nav" id="navbar">
             <!-- Logo Section -->
             <a href="{% url 'home' %}" class="nav-logo">
-                <img src="{% static 'images/logo_new.png' %}" alt="NeuroVaidya" class="nav-logo-img">
                 <span class="logo-text">Neuro<span>Vaidya</span></span>
             </a>
 
@@ -215,8 +214,6 @@
 
                 <!-- Neuro AI Copilot Toggle -->
                 <button class="neuro-ai-nav-toggle" id="neuroAiNavToggle" onclick="handleNeuroAiToggle()">
-                    <img src="{% static 'images/logo_new.png' %}" alt="Neuro AI"
-                        style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;">
                     <span>Neuro AI</span>
                     <div class="neuro-ai-pulse" style="left: 17%; top: 78%; width: 8px; height: 8px;"></div>
                 </button>
@@ -457,8 +454,7 @@
             <footer class="footer" id="contact">
                 <div class="footer-content">
                     <div class="footer-logo">
-                        <img src="{% static 'images/logo_new.png' %}" alt="NeuroVaidya" class="footer-logo-img">
-                        <span class="logo-text">Neuro<span>Vaidya</span></span>
+                       <div class="footer-logo"><span class="logo-text">Neuro<span>Vaidya</span></span></div>
                     </div>
                     <ul class="footer-links">
                         <li><a href="#">Privacy Policy</a></li>

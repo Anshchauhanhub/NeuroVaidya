@@ -1,248 +1,149 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description"
-        content="NeuroVaidya - Where Ancient Wisdom Meets Modern Medicine. Premium pharmaceutical care blending Ayurveda with neuroscience.">
-    <meta name="referrer" content="no-referrer">
-    <title>NeuroVaidya | Ancient Wisdom, Modern Medicine</title>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-</head>
+{% block title %}Home | Pure Healing{% endblock %}
 
-<body>
-
-    <!-- GLASSMORPHISM NAVIGATION -->
-    <nav class="nav" id="navbar">
-        <a href="{% url 'home' %}" class="nav-logo"><img src="{% static 'images/logo_new.png' %}" alt="NeuroVaidya"
-                class="nav-logo-img"><span class="logo-text">Neuro<span>Vaidya</span></span></a>
-        <ul class="nav-links">
-            <li><a href="#about">About Us</a></li>
-            <li><a href="#products">Products</a></li>
-            <li><a href="#testimonials">Testimonials</a></li>
-            <li><a href="#contact">Contact</a></li>
-        </ul>
-        {% if user.is_authenticated %}
-        <a href="{% url 'catalog' %}" class="nav-portal">Explore</a>
-        {% else %}
-        <a href="{% url 'login' %}" class="nav-portal">Sign In</a>
-        {% endif %}
-    </nav>
-
-    <!-- HERO SECTION WITH ANIMATED FRAME SEQUENCE -->
-    <section class="hero" id="hero">
-        <div class="hero-bg" id="hero-root">
-            <!-- React Hero Animation Mounts Here -->
-        </div>
-        <div class="hero-overlay"></div>
-        <div class="hero-content">
-            <p class="hero-subtitle">Ancient Wisdom • Modern AI • Honest Prices</p>
-            <h1 class="hero-title">Smarter Healing, <span>Smaller Bills</span></h1>
-            <p class="hero-description">
-                Experience the future of healthcare where precise AI diagnostics meets effective Ayurvedic
-                medication—all at prices that care for your wallet.
+{% block content %}
+<!-- HERO SECTION - PREMIUM VANILLA -->
+<section class="section-padding" style="position: relative; overflow: hidden; min-height: 90vh; display: flex; align-items: center;">
+    <div class="hero-glow" style="top: -200px; left: -200px;"></div>
+    <div class="container" style="position: relative; z-index: 1;">
+        <div class="reveal" style="max-width: 800px;">
+            <p class="section-tag" style="color: var(--accent-primary); font-weight: 700; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 1.5rem;">Ancient Wisdom • Modern AI • Honest Prices</p>
+            <h1 style="font-size: clamp(3rem, 10vw, 5.5rem); line-height: 0.95; margin-bottom: 2rem;">
+                Smarter Healing, <br><span class="text-gradient">Smaller Bills</span>
+            </h1>
+            <p style="font-size: 1.25rem; color: var(--text-muted); margin-bottom: 3rem; max-width: 600px;">
+                Experience the future of healthcare where precise AI diagnostics meets effective Ayurvedic medication—all at prices that care for your wallet.
             </p>
-            <div class="hero-cta">
-                <a href="#products" class="btn-primary">Explore Products</a>
-                <a href="#about" class="btn-secondary">Learn More</a>
+            <div style="display: flex; gap: 1.5rem; flex-wrap: wrap;">
+                <a href="{% url 'catalog' %}" class="nv-btn nv-btn-primary" style="padding: 1.2rem 3rem; font-size: 1.1rem;">Explore Products</a>
+                <a href="#about" class="nv-btn nv-btn-outline" style="padding: 1.2rem 3rem; font-size: 1.1rem;">Learn More</a>
             </div>
         </div>
-    </section>
+    </div>
+    
+    <!-- Abstract Vanilla Animation Container (Will be handled by vanilla-app.js) -->
+    <div id="neural-animation-root" style="position: absolute; right: -10%; top: 50%; transform: translateY(-50%); width: 50vw; height: 80vh; pointer-events: none; opacity: 0.6;">
+        <!-- Canvas/SVG injected here -->
+    </div>
+</section>
 
-    <!-- ABOUT US - PHARMACY VALUES -->
-    <section class="section physics-section" id="about">
-        <div class="section-header reveal">
+<!-- VALUES SECTION -->
+<section id="about" class="section-padding" style="background: linear-gradient(to bottom, var(--bg-main), var(--bg-surface));">
+    <div class="container">
+        <div class="reveal" style="text-align: center; margin-bottom: 5rem;">
             <p class="section-tag">Why Choose Us</p>
-            <h2 class="section-title">The NeuroVaidya Difference</h2>
-            <p class="section-description">
-                We combine cutting-edge technology with traditional care to deliver better health outcomes at a fraction
-                of the cost.
-            </p>
+            <h2 style="font-size: 3.5rem;">The NeuroVaidya Difference</h2>
         </div>
 
-        <div class="physics-grid">
-            <div class="physics-card reveal">
-                <div class="physics-icon">🤖</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2.5rem;">
+            <div class="glass-card reveal">
+                <div style="font-size: 3rem; margin-bottom: 1.5rem;">🤖</div>
                 <h3>AI-Powered Care</h3>
-                <p>Our advanced Neuro AI analyzes your health needs with precision, ensuring you get the exact treatment
-                    you require without guesswork.</p>
+                <p>Our advanced Neuro AI analyzes your health needs with precision, ensuring you get the exact treatment you require without guesswork.</p>
             </div>
-
-            <div class="physics-card reveal">
-                <div class="physics-icon">💰</div>
+            <div class="glass-card reveal" style="border-color: hsla(var(--h-gold), 0.3);">
+                <div style="font-size: 3rem; margin-bottom: 1.5rem;">💰</div>
                 <h3>Fair Pricing</h3>
-                <p>We believe good health shouldn't cost a fortune. Our direct-to-patient model ensures you pay honest
-                    prices for premium medicines.</p>
+                <p>We believe good health shouldn't cost a fortune. Our direct-to-patient model ensures you pay honest prices for premium medicines.</p>
             </div>
-
-            <div class="physics-card reveal">
-                <div class="physics-icon">🌿</div>
+            <div class="glass-card reveal">
+                <div style="font-size: 3rem; margin-bottom: 1.5rem;">🌿</div>
                 <h3>Root Cause Healing</h3>
-                <p>Beyond just symptoms, we focus on holistic wellness using time-tested Ayurvedic wisdom integrated
-                    with modern science.</p>
+                <p>Beyond just symptoms, we focus on holistic wellness using time-tested Ayurvedic wisdom integrated with modern science.</p>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- PRODUCT CATALOG -->
-    <section class="section products-section" id="products">
-        <div class="section-header reveal">
-            <p class="section-tag">Our Products</p>
-            <h2 class="section-title">Healthcare Essentials</h2>
-            <p class="section-description">
-                Premium pharmaceutical products curated for your wellness journey.
-            </p>
+<!-- PRODUCT SHOWCASE -->
+<section id="products" class="section-padding">
+    <div class="container">
+        <div class="reveal" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 5rem;">
+            <div>
+                <p class="section-tag">Our Products</p>
+                <h2 style="font-size: 3.5rem;">Healthcare Essentials</h2>
+            </div>
+            <a href="{% url 'catalog' %}" class="nv-btn nv-btn-outline">View Full Catalog</a>
         </div>
 
-        <div class="products-container">
-            <div class="products-grid">
-
-                <!-- WELLNESS CAPSULES -->
-                <div class="product-card reveal">
-                    <div class="product-img-wrapper">
-                        <img class="product-img" src="{% static 'images/product-neurozen.png' %}"
-                            alt="Wellness Capsules">
-                    </div>
-                    <div class="product-info">
-                        <h3 class="product-name">WELLNESS PLUS</h3>
-                        <p class="product-tagline">Daily Health Support</p>
-                        <p class="product-description">
-                            Premium multivitamin capsules formulated for optimal daily nutrition.
-                            Boost your immunity and energy naturally.
-                        </p>
-                        <div class="product-price">₹599 <span>/ bottle</span></div>
-                        <a href="{% url 'catalog' %}" class="btn-primary">Add to Cart</a>
-                    </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 3rem;">
+            <!-- WELLNESS PLUS -->
+            <div class="glass-card reveal product-card" style="padding: 0; overflow: hidden;">
+                <div style="height: 300px; background: hsla(var(--h-white), 0.05); display: flex; align-items: center; justify-content: center; position: relative;">
+                    <img src="{% static 'images/product-neurozen.png' %}" alt="Wellness Plus" style="height: 80%; object-fit: contain; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.5));">
                 </div>
-
-                <!-- CALM SERUM -->
-                <div class="product-card reveal">
-                    <div class="product-img-wrapper">
-                        <img class="product-img" src="{% static 'images/product-calmia.png' %}" alt="Calm Serum">
+                <div style="padding: 2.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h3 style="margin: 0;">WELLNESS PLUS</h3>
+                        <span style="color: var(--accent-secondary); font-weight: 800; font-size: 1.25rem;">₹599</span>
                     </div>
-                    <div class="product-info">
-                        <h3 class="product-name">CALM SERUM</h3>
-                        <p class="product-tagline">Stress Relief Formula</p>
-                        <p class="product-description">
-                            Natural lavender-infused wellness serum for relaxation and peaceful sleep.
-                            Doctor recommended for stress management.
-                        </p>
-                        <div class="product-price">₹449 <span>/ bottle</span></div>
-                        <a href="{% url 'catalog' %}" class="btn-primary">Add to Cart</a>
-                    </div>
+                    <p style="color: var(--text-muted); margin-bottom: 2rem;">Premium multivitamin capsules formulated for optimal daily nutrition. Boost your immunity and energy naturally.</p>
+                    <a href="{% url 'catalog' %}" class="nv-btn nv-btn-primary" style="width: 100%;">Add to Cart</a>
                 </div>
+            </div>
 
-                <!-- REGENERATE SUPPLEMENTS -->
-                <div class="product-card reveal">
-                    <div class="product-img-wrapper">
-                        <img class="product-img" src="{% static 'images/product-regenrx.png' %}"
-                            alt="Regenerate Supplements">
-                    </div>
-                    <div class="product-info">
-                        <h3 class="product-name">REGENERATE</h3>
-                        <p class="product-tagline">Recovery & Vitality</p>
-                        <p class="product-description">
-                            Advanced supplement blend for cellular health and vitality.
-                            Perfect for post-workout recovery and anti-aging.
-                        </p>
-                        <div class="product-price">₹799 <span>/ jar</span></div>
-                        <a href="{% url 'catalog' %}" class="btn-primary">Add to Cart</a>
-                    </div>
+            <!-- CALM SERUM -->
+            <div class="glass-card reveal product-card" style="padding: 0; overflow: hidden;">
+                <div style="height: 300px; background: hsla(var(--h-white), 0.05); display: flex; align-items: center; justify-content: center;">
+                    <img src="{% static 'images/product-calmia.png' %}" alt="Calm Serum" style="height: 80%; object-fit: contain; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.5));">
                 </div>
-
+                <div style="padding: 2.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h3 style="margin: 0;">CALM SERUM</h3>
+                        <span style="color: var(--accent-secondary); font-weight: 800; font-size: 1.25rem;">₹449</span>
+                    </div>
+                    <p style="color: var(--text-muted); margin-bottom: 2rem;">Natural lavender-infused wellness serum for relaxation and peaceful sleep. Doctor recommended for stress management.</p>
+                    <a href="{% url 'catalog' %}" class="nv-btn nv-btn-primary" style="width: 100%;">Add to Cart</a>
+                </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-
-    <!-- TESTIMONIALS -->
-    <section class="section testimonials-section" id="testimonials">
-        <div class="section-header reveal">
-            <p class="section-tag">Customer Reviews</p>
-            <h2 class="section-title">What Our Customers Say</h2>
-            <p class="section-description">
-                Trusted by thousands of families for quality medicines and healthcare guidance.
-            </p>
+<!-- TESTIMONIALS -->
+<section id="testimonials" class="section-padding" style="background: var(--bg-surface);">
+    <div class="container">
+        <div class="reveal" style="text-align: center; margin-bottom: 5rem;">
+            <p class="section-tag">Trusted Globally</p>
+            <h2 style="font-size: 3.5rem;">Healing Stories</h2>
         </div>
 
-        <div class="testimonials-grid">
-            <div class="testimonial-card reveal">
-                <p class="testimonial-quote">
-                    NeuroVaidya has been my go-to for all medicines. Their pharmacists are knowledgeable
-                    and always ready to help. The quality of medicines is consistently excellent.
-                </p>
-                <div class="testimonial-author">
-                    <div class="author-avatar">PS</div>
-                    <div class="author-info">
-                        <h4>Priya Sharma</h4>
-                        <p>Regular Customer</p>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+            <div class="glass-card reveal">
+                <p style="font-style: italic; margin-bottom: 2rem; color: var(--text-muted);">"NeuroVaidya has been my go-to for all medicines. Their pharmacists are knowledgeable and always ready to help. The quality of medicines is consistently excellent."</p>
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <div style="width: 48px; height: 48px; border-radius: 50%; background: var(--accent-primary); color: var(--bg-main); display: flex; align-items: center; justify-content: center; font-weight: 800;">PS</div>
+                    <div>
+                        <h4 style="margin: 0;">Priya Sharma</h4>
+                        <p style="margin: 0; font-size: 0.8rem; color: var(--text-muted);">Regular Customer</p>
                     </div>
                 </div>
             </div>
-
-            <div class="testimonial-card reveal">
-                <p class="testimonial-quote">
-                    Fast delivery and genuine products every time. I've been ordering my parents' medicines
-                    from NeuroVaidya for 2 years now. Highly recommended for families.
-                </p>
-                <div class="testimonial-author">
-                    <div class="author-avatar">RK</div>
-                    <div class="author-info">
-                        <h4>Rahul Kumar</h4>
-                        <p>Verified Buyer</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="testimonial-card reveal">
-                <p class="testimonial-quote">
-                    The Wellness Plus capsules have made a real difference in my daily energy levels.
-                    Great quality supplements at reasonable prices. Thank you NeuroVaidya!
-                </p>
-                <div class="testimonial-author">
-                    <div class="author-avatar">AM</div>
-                    <div class="author-info">
-                        <h4>Anita Mehta</h4>
-                        <p>Wellness Customer</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="testimonial-card reveal">
-                <p class="testimonial-quote">
-                    Exceptional customer service and authentic medicines. The pharmacist even called
-                    to explain the dosage properly. This is healthcare done right.
-                </p>
-                <div class="testimonial-author">
-                    <div class="author-avatar">VG</div>
-                    <div class="author-info">
-                        <h4>Dr. Vikram Gupta</h4>
-                        <p>Healthcare Professional</p>
+            
+            <div class="glass-card reveal">
+                <p style="font-style: italic; margin-bottom: 2rem; color: var(--text-muted);">"Fast delivery and genuine products every time. I've been ordering my parents' medicines from NeuroVaidya for 2 years now. Highly recommended for families."</p>
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <div style="width: 48px; height: 48px; border-radius: 50%; background: var(--accent-secondary); color: var(--bg-main); display: flex; align-items: center; justify-content: center; font-weight: 800;">RK</div>
+                    <div>
+                        <h4 style="margin: 0;">Rahul Kumar</h4>
+                        <p style="margin: 0; font-size: 0.8rem; color: var(--text-muted);">Verified Buyer</p>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- FOOTER -->
-    <footer class="footer" id="contact">
-        <div class="footer-content">
-            <div class="footer-logo"><img src="{% static 'images/logo_new.png' %}" alt="NeuroVaidya"
-                    class="footer-logo-img"><span class="logo-text">Neuro<span>Vaidya</span></span></div>
-            <ul class="footer-links">
-                <li><a href="#">Privacy Policy</a></li>
-                <li><a href="#">Prescription Upload</a></li>
-                <li><a href="#">Store Locator</a></li>
-                <li><a href="#">Contact Us</a></li>
-            </ul>
-            <p class="footer-copyright">© 2026 NeuroVaidya. All rights reserved. Licensed Pharmaceutical Retailer.</p>
+<!-- CALL TO ACTION -->
+<section class="section-padding" style="position: relative; overflow: hidden;">
+    <div class="container">
+        <div class="glass-card reveal" style="text-align: center; padding: 6rem 2rem; background: linear-gradient(135deg, hsla(var(--h-cyan), 0.1), hsla(var(--h-gold), 0.1)); border-color: var(--accent-primary);">
+            <h2 style="font-size: 4rem; margin-bottom: 1.5rem;">Ready for Smarter Healing?</h2>
+            <p style="font-size: 1.25rem; color: var(--text-muted); margin-bottom: 3rem; max-width: 600px; margin-inline: auto;">Join thousands of families who trust NeuroVaidya for their pharmaceutical needs.</p>
+            <a href="{% url 'login' %}" class="nv-btn nv-btn-primary" style="padding: 1.5rem 4rem; font-size: 1.25rem;">Create Account Now</a>
         </div>
-    </footer>
-
-    <script src="{% static 'dist/main.js' %}"></script>
-    <script src="{% static 'js/main.js' %}"></script>
-</body>
-
-</html>
+    </div>
+</section>
+{% endblock %}

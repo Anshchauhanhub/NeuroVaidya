@@ -1,0 +1,648 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Nearby Care{% endblock %}
+
+{% block extra_css %}
+<style>
+    .nearby-page {
+        padding: 36px 20px 40px;
+        min-height: 100vh;
+        background: #000000;
+    }
+
+    .nearby-shell {
+        max-width: 1180px;
+        margin: 0 auto;
+    }
+
+    .nearby-hero {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 24px;
+        align-items: stretch;
+    }
+
+    .nearby-panel {
+        background: #050505;
+        border: 1px solid #1C1C1E;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+    }
+
+    .nearby-search-card {
+        padding: 26px;
+    }
+
+    .nearby-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 1.95rem;
+        line-height: 1.1;
+        margin-bottom: 8px;
+        color: #FFFFFF;
+    }
+
+    .nearby-title span {
+        color: #B8860B;
+    }
+
+    .nearby-subtitle {
+        color: rgba(255, 255, 255, 0.68);
+        margin-bottom: 20px;
+        max-width: 620px;
+    }
+
+    .nearby-input-row {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 12px;
+    }
+
+    .nearby-input-row input {
+        flex: 1;
+        background: #0A0A0A;
+        color: #fff;
+        border: 1px solid #222224;
+        border-radius: 16px;
+        padding: 16px 18px;
+        font-size: 1rem;
+        outline: none;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .nearby-input-row input:focus {
+        border-color: #B8860B;
+        box-shadow: 0 0 0 4px rgba(184, 134, 11, 0.15);
+    }
+
+    .nearby-input-row input::placeholder {
+        color: rgba(255, 255, 255, 0.38);
+    }
+
+    .nearby-actions {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 14px;
+        flex-wrap: wrap;
+    }
+
+    .nearby-mini-button,
+    .nearby-search-button,
+    .nearby-entity-button {
+        border: 1px solid transparent;
+        border-radius: 16px;
+        font-family: inherit;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.25s ease;
+    }
+
+    .nearby-mini-button {
+        padding: 14px 18px;
+        background: rgba(255, 255, 255, 0.05);
+        color: #fff;
+        border-color: rgba(255, 255, 255, 0.1);
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .nearby-mini-button:hover,
+    .nearby-entity-button:hover {
+        border-color: #B8860B;
+        color: #B8860B;
+        transform: translateY(-1px);
+    }
+
+    .nearby-search-button {
+        width: 100%;
+        padding: 16px 18px;
+        background: #B8860B;
+        color: #000000;
+        font-size: 1rem;
+        font-weight: 700;
+        margin-top: 6px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        border-radius: 14px;
+    }
+
+    .nearby-search-button:hover {
+        background: #C59B27;
+        box-shadow: 0 4px 20px rgba(184, 134, 11, 0.35);
+        transform: translateY(-1px);
+    }
+
+    .nearby-search-button:disabled,
+    .nearby-mini-button:disabled,
+    .nearby-entity-button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .nearby-entity-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin: 20px 0;
+    }
+
+    .nearby-entity-button {
+        padding: 14px 16px;
+        background: rgba(255, 255, 255, 0.04);
+        color: rgba(255, 255, 255, 0.72);
+        border-color: rgba(255, 255, 255, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .nearby-entity-button.active {
+        background: #B8860B;
+        color: #000000;
+        border-color: #B8860B;
+        font-weight: 700;
+    }
+
+    .nearby-map-card {
+        padding: 18px;
+    }
+
+    .nearby-map {
+        width: 100%;
+        height: 100%;
+        min-height: 320px;
+        border: 1px solid #1C1C1E;
+        border-radius: 18px;
+        overflow: hidden;
+        background: #000000;
+    }
+
+    .nearby-status {
+        margin-top: 14px;
+        padding: 14px 16px;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: rgba(255, 255, 255, 0.74);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .nearby-status strong {
+        color: #B8860B;
+    }
+
+    .nearby-results {
+        margin-top: 22px;
+        display: grid;
+        gap: 14px;
+    }
+
+    .nearby-results-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 12px;
+        flex-wrap: wrap;
+        padding: 0 4px;
+    }
+
+    .nearby-results-header h3 {
+        font-size: 1.15rem;
+        color: #FFFFFF;
+    }
+
+    .nearby-results-header span {
+        color: rgba(255, 255, 255, 0.52);
+        font-size: 0.95rem;
+    }
+
+    .nearby-result-card {
+        padding: 18px;
+        display: grid;
+        gap: 14px;
+        background: #050505;
+        border: 1px solid #1C1C1E;
+        border-radius: 20px;
+    }
+
+    .nearby-result-top {
+        display: flex;
+        justify-content: space-between;
+        gap: 14px;
+        align-items: flex-start;
+    }
+
+    .nearby-result-name {
+        font-size: 1.05rem;
+        font-weight: 800;
+        margin-bottom: 4px;
+        color: #FFFFFF;
+    }
+
+    .nearby-result-meta {
+        color: rgba(255, 255, 255, 0.62);
+        font-size: 0.95rem;
+    }
+
+    .nearby-pill {
+        display: inline-flex;
+        align-items: center;
+        padding: 7px 12px;
+        border-radius: 999px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        background: rgba(184, 134, 11, 0.15);
+        color: #B8860B;
+        border: 1px solid rgba(184, 134, 11, 0.3);
+    }
+
+    .nearby-result-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .nearby-link-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 11px 14px;
+        border-radius: 14px;
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: #fff;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.2s ease;
+    }
+
+    .nearby-link-button.primary {
+        background: #B8860B;
+        color: #000000;
+        border-color: transparent;
+    }
+
+    .nearby-link-button.primary:hover {
+        background: #C59B27;
+        box-shadow: 0 4px 15px rgba(184, 134, 11, 0.3);
+    }
+
+    .nearby-error,
+    .nearby-empty {
+        padding: 18px;
+        border-radius: 18px;
+        background: #050505;
+        border: 1px solid #1C1C1E;
+        color: rgba(255, 255, 255, 0.76);
+    }
+
+    .nearby-error {
+        border-color: rgba(255, 93, 93, 0.3);
+        color: #ffb4b4;
+    }
+
+    .nearby-help {
+        padding: 26px;
+        background: #050505;
+        border: 1px solid #1C1C1E;
+    }
+
+    .nearby-help h3 {
+        font-size: 1.15rem;
+        margin-bottom: 10px;
+        color: #FFFFFF;
+    }
+
+    .nearby-help ul {
+        padding-left: 18px;
+        color: rgba(255, 255, 255, 0.72);
+        display: grid;
+        gap: 8px;
+    }
+
+    .hidden {
+        display: none !important;
+    }
+
+    @media (max-width: 900px) {
+        .nearby-hero {
+            grid-template-columns: 1fr;
+        }
+
+        .nearby-entity-row {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .nearby-page {
+            padding-top: 24px;
+        }
+
+        .nearby-title {
+            font-size: 1.55rem;
+        }
+
+        .nearby-input-row {
+            flex-direction: column;
+        }
+
+        .nearby-search-card,
+        .nearby-help,
+        .nearby-map-card {
+            padding: 18px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="nearby-page">
+    <div class="nearby-shell">
+        <div class="nearby-hero">
+            <section class="nearby-panel nearby-search-card">
+                <h1 class="nearby-title">
+                    <span>📍</span>
+                    Nearby Care
+                </h1>
+                <p class="nearby-subtitle">
+                    Search pharmacies and doctors around a city, address, or your current GPS location.
+                </p>
+
+                <div class="nearby-input-row">
+                    <input id="nearbyQuery" type="text" placeholder="City, address, or postal code..." autocomplete="off">
+                    <button class="nearby-mini-button" id="nearbyFindBtn" type="button">
+                        <span>Search</span>
+                    </button>
+                </div>
+
+                <button class="nearby-mini-button" id="nearbyGpsBtn" type="button" style="width: 100%; justify-content: center;">
+                    <span>Use my location</span>
+                </button>
+
+                <div class="nearby-status" id="nearbyLocationStatus">
+                    <strong>Ready</strong>
+                    <span>Type a location or share GPS to start.</span>
+                </div>
+
+                <div class="nearby-entity-row">
+                    <button class="nearby-entity-button active" type="button" data-entity="all">All</button>
+                    <button class="nearby-entity-button" type="button" data-entity="pharmacy">Pharmacy</button>
+                    <button class="nearby-entity-button" type="button" data-entity="doctor">Doctor</button>
+                </div>
+
+                <button class="nearby-search-button" id="nearbySearchBtn" type="button">
+                    Search Nearby
+                </button>
+
+                <div id="nearbyError" class="nearby-error hidden" role="alert"></div>
+                <div id="nearbyEmpty" class="nearby-empty" style="margin-top: 16px;">
+                    Search by city, postal code, or GPS to see local pharmacies and doctors.
+                </div>
+            </section>
+
+            <aside class="nearby-panel nearby-map-card">
+                <iframe
+                    id="nearbyMap"
+                    class="nearby-map"
+                    src="https://www.openstreetmap.org/export/embed.html?bbox=76.9,28.5,77.2,28.7&layer=mapnik"
+                    loading="lazy"
+                    title="Nearby map"
+                ></iframe>
+            </aside>
+        </div>
+
+        <section class="nearby-results" id="nearbyResultsSection">
+            <div class="nearby-results-header">
+                <h3 id="nearbyResultsTitle">No results yet</h3>
+                <span id="nearbyResultsMeta">Waiting for a search.</span>
+            </div>
+            <div id="nearbyResultsList"></div>
+        </section>
+
+        <section class="nearby-panel nearby-help" style="margin-top: 22px;">
+            <h3>How it works</h3>
+            <ul>
+                <li>The page geocodes your typed city, address, or postal code with OpenStreetMap Nominatim.</li>
+                <li>It then searches OpenStreetMap Overpass for nearby pharmacies and doctors around that point.</li>
+                <li>Results are ranked by distance, and each place includes map and directions links.</li>
+            </ul>
+        </section>
+    </div>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    (function () {
+        const apiUrl = "{% url 'search:nearby_search' %}";
+        const queryInput = document.getElementById('nearbyQuery');
+        const findBtn = document.getElementById('nearbyFindBtn');
+        const gpsBtn = document.getElementById('nearbyGpsBtn');
+        const searchBtn = document.getElementById('nearbySearchBtn');
+        const errorBox = document.getElementById('nearbyError');
+        const emptyBox = document.getElementById('nearbyEmpty');
+        const statusBox = document.getElementById('nearbyLocationStatus');
+        const resultsTitle = document.getElementById('nearbyResultsTitle');
+        const resultsMeta = document.getElementById('nearbyResultsMeta');
+        const resultsList = document.getElementById('nearbyResultsList');
+        const mapFrame = document.getElementById('nearbyMap');
+        const entityButtons = Array.from(document.querySelectorAll('.nearby-entity-button'));
+
+        let activeEntity = 'all';
+        let currentLat = null;
+        let currentLon = null;
+        let currentLocationLabel = '';
+
+        function setBusy(isBusy) {
+            [findBtn, gpsBtn, searchBtn, ...entityButtons].forEach((button) => {
+                button.disabled = isBusy;
+            });
+        }
+
+        function showError(message) {
+            errorBox.textContent = message;
+            errorBox.classList.remove('hidden');
+        }
+
+        function clearError() {
+            errorBox.textContent = '';
+            errorBox.classList.add('hidden');
+        }
+
+        function setStatus(title, message) {
+            statusBox.innerHTML = `<strong>${title}</strong><span>${message}</span>`;
+        }
+
+        function formatDistance(meters) {
+            if (meters < 1000) {
+                return `${Math.round(meters)}m`;
+            }
+            return `${(meters / 1000).toFixed(1)}km`;
+        }
+
+        function renderMap(lat, lon) {
+            const delta = 0.02;
+            mapFrame.src = `https://www.openstreetmap.org/export/embed.html?bbox=${lon - delta},${lat - 0.015},${lon + delta},${lat + 0.015}&layer=mapnik&marker=${lat},${lon}`;
+        }
+
+        function renderResults(data) {
+            const results = data.results || [];
+            const location = data.location || {};
+
+            if (location.lat && location.lon) {
+                currentLat = location.lat;
+                currentLon = location.lon;
+                currentLocationLabel = location.display_name || currentLocationLabel;
+                renderMap(location.lat, location.lon);
+            }
+
+            if (currentLocationLabel) {
+                setStatus('Location set', currentLocationLabel);
+            }
+
+            if (!results.length) {
+                resultsTitle.textContent = 'No nearby places found';
+                resultsMeta.textContent = 'Try a larger radius or another location.';
+                resultsList.innerHTML = '';
+                emptyBox.classList.remove('hidden');
+                emptyBox.textContent = 'No pharmacies or doctors were found nearby.';
+                return;
+            }
+
+            emptyBox.classList.add('hidden');
+            resultsTitle.textContent = `${results.length} places found`;
+            resultsMeta.textContent = currentLocationLabel || 'Nearby search results';
+
+            resultsList.innerHTML = results.map((place) => {
+                const phoneLink = place.phone ? `<a class="nearby-link-button" href="tel:${place.phone}">Call</a>` : '';
+                const openingHours = place.opening_hours ? `<div class="nearby-result-meta">Hours: ${place.opening_hours}</div>` : '';
+                return `
+                    <article class="nearby-result-card">
+                        <div class="nearby-result-top">
+                            <div>
+                                <div class="nearby-result-name">${place.name}</div>
+                                <div class="nearby-result-meta">${formatDistance(place.distance_m)} away · ${place.eta_walk_min} min walk</div>
+                                ${place.address ? `<div class="nearby-result-meta">${place.address}</div>` : ''}
+                                ${openingHours}
+                                ${place.phone ? `<div class="nearby-result-meta">${place.phone}</div>` : ''}
+                            </div>
+                            <span class="nearby-pill">${place.category}</span>
+                        </div>
+                        <div class="nearby-result-actions">
+                            <a class="nearby-link-button primary" href="${place.walk_url}" target="_blank" rel="noreferrer">Walk</a>
+                            <a class="nearby-link-button" href="${place.drive_url}" target="_blank" rel="noreferrer">Drive</a>
+                            <a class="nearby-link-button" href="${place.maps_url}" target="_blank" rel="noreferrer">Open Map</a>
+                            ${phoneLink}
+                        </div>
+                    </article>
+                `;
+            }).join('');
+        }
+
+        async function runSearch(params) {
+            clearError();
+            setBusy(true);
+            setStatus('Searching', 'Looking for pharmacies and doctors nearby...');
+            emptyBox.classList.add('hidden');
+
+            try {
+                const url = new URL(apiUrl, window.location.origin);
+                Object.entries(params).forEach(([key, value]) => {
+                    if (value !== null && value !== undefined && value !== '') {
+                        url.searchParams.set(key, value);
+                    }
+                });
+
+                const response = await fetch(url.toString(), { headers: { 'Accept': 'application/json' } });
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Nearby search failed');
+                }
+
+                renderResults(data);
+            } catch (error) {
+                showError(error.message || 'Nearby search failed.');
+                resultsTitle.textContent = 'Search failed';
+                resultsMeta.textContent = 'Please try again.';
+            } finally {
+                setBusy(false);
+            }
+        }
+
+        function getEntityType() {
+            return activeEntity;
+        }
+
+        async function handleTextSearch() {
+            const query = queryInput.value.trim();
+            if (!query) {
+                showError('Enter a city, address, or postal code.');
+                return;
+            }
+
+            currentLocationLabel = query;
+            await runSearch({ query, entity_type: getEntityType(), radius_m: 3000, limit: 20 });
+        }
+
+        async function handleGpsSearch() {
+            if (!navigator.geolocation) {
+                showError('Your browser does not support location sharing.');
+                return;
+            }
+
+            setBusy(true);
+            setStatus('Detecting', 'Getting your current location...');
+
+            navigator.geolocation.getCurrentPosition(
+                async (position) => {
+                    currentLat = position.coords.latitude;
+                    currentLon = position.coords.longitude;
+                    currentLocationLabel = 'Current GPS location';
+                    queryInput.value = '';
+                    await runSearch({ lat: currentLat, lon: currentLon, location_name: 'Current GPS location', entity_type: getEntityType(), radius_m: 3000, limit: 20 });
+                },
+                () => {
+                    setBusy(false);
+                    setStatus('Ready', 'Type a location or share GPS to start.');
+                    showError('Location access was denied or unavailable.');
+                },
+                { enableHighAccuracy: true, timeout: 15000 }
+            );
+        }
+
+        entityButtons.forEach((button) => {
+            button.addEventListener('click', () => {
+                entityButtons.forEach((other) => other.classList.remove('active'));
+                button.classList.add('active');
+                activeEntity = button.dataset.entity || 'all';
+            });
+        });
+
+        findBtn.addEventListener('click', handleTextSearch);
+        searchBtn.addEventListener('click', handleTextSearch);
+        gpsBtn.addEventListener('click', handleGpsSearch);
+
+        queryInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                handleTextSearch();
+            }
+        });
+    })();
+</script>
+{% endblock %}

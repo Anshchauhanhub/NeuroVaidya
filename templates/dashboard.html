@@ -16,22 +16,6 @@
                 <a href="#" class="nav-item active" onclick="showSection('profile')">
                     <span class="nav-icon">👤</span> My Profile
                 </a>
-                <a href="#" class="nav-item" onclick="showSection('orders')">
-                    <span class="nav-icon">📦</span> My Orders
-                </a>
-                <a href="#" class="nav-item" onclick="showSection('wallet')">
-                    <span class="nav-icon">🪙</span> Dava Wallet
-                </a>
-                <a href="#" class="nav-item" onclick="showSection('patients')">
-                    <span class="nav-icon">👥</span> Patients
-                </a>
-                <a href="#" class="nav-item" onclick="showSection('refer')">
-                    <span class="nav-icon">₹</span> Refer and Earn
-                </a>
-                <a href="#" class="nav-item" onclick="showSection('notifications')">
-                    <span class="nav-icon">🔔</span> Notifications
-                </a>
-
                 <a href="#" class="nav-item" onclick="showSection('help')">
                     <span class="nav-icon">📞</span> Need Help?
                 </a>
@@ -44,22 +28,12 @@
                         <span class="nav-icon">🚪</span> Logout
                     </button>
                 </form>
-
-
             </nav>
         </aside>
 
         <main class="dashboard-main">
-            <!-- Orders Section -->
-            <div id="orders-section" class="dashboard-section-content">
-                <h2>My Orders</h2>
-                <div id="ordersList" class="orders-list">Loading...</div>
-            </div>
-
-
-
             <!-- Profile Section -->
-            <div id="profile-section" class="dashboard-section-content" style="display:none;">
+            <div id="profile-section" class="dashboard-section-content">
                 <h2>Profile Settings</h2>
                 <form id="profileForm" class="profile-form">
                     {% csrf_token %}
@@ -79,57 +53,6 @@
                             id="profileAddress"></textarea></div>
                     <button type="submit" class="btn-primary">Update Profile</button>
                 </form>
-            </div>
-
-            <!-- Dava Wallet Section -->
-            <div id="wallet-section" class="dashboard-section-content" style="display:none;">
-                <h2>Dava Wallet</h2>
-                <div
-                    style="text-align: center; padding: 50px; background: rgba(255,255,255,0.05); border-radius: 12px;">
-                    <span style="font-size: 3rem;">🪙</span>
-                    <h3>Wallet Balance: ₹0.00</h3>
-                    <p style="color: rgba(255,255,255,0.6);">Add money to your wallet for faster checkouts.</p>
-                    <button class="btn-primary" style="margin-top: 15px;">Add Money</button>
-                </div>
-            </div>
-
-            <!-- Patients Section -->
-            <div id="patients-section" class="dashboard-section-content" style="display:none;">
-                <h2>Patients</h2>
-                <div
-                    style="text-align: center; padding: 50px; background: rgba(255,255,255,0.05); border-radius: 12px;">
-                    <span style="font-size: 3rem;">👥</span>
-                    <h3>Manage Patients</h3>
-                    <p style="color: rgba(255,255,255,0.6);">Add family members or patients to manage their health
-                        records.</p>
-                    <button class="btn-primary" style="margin-top: 15px;">Add Patient</button>
-                </div>
-            </div>
-
-            <!-- Refer & Earn Section -->
-            <div id="refer-section" class="dashboard-section-content" style="display:none;">
-                <h2>Refer and Earn</h2>
-                <div
-                    style="text-align: center; padding: 50px; background: rgba(255,255,255,0.05); border-radius: 12px;">
-                    <span style="font-size: 3rem;">🎁</span>
-                    <h3>Invite Friends & Earn</h3>
-                    <p style="color: rgba(255,255,255,0.6);">Share your referral code and earn rewards on their first
-                        order.</p>
-                    <div
-                        style="margin: 20px 0; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 8px; display: inline-block;">
-                        <code style="font-size: 1.2rem; color: var(--vaidya-gold);">NEURO2026</code>
-                    </div>
-                    <br>
-                    <button class="btn-primary">Copy Code</button>
-                </div>
-            </div>
-
-            <!-- Notifications Section -->
-            <div id="notifications-section" class="dashboard-section-content" style="display:none;">
-                <h2>Notifications</h2>
-                <div style="padding: 20px; background: rgba(255,255,255,0.05); border-radius: 12px;">
-                    <p style="color: rgba(255,255,255,0.6); text-align: center;">No new notifications.</p>
-                </div>
             </div>
 
             <!-- Help Section -->
@@ -154,8 +77,6 @@
                     </div>
                 </div>
             </div>
-
-
         </main>
     </div>
 
@@ -165,7 +86,7 @@
 {% block extra_css %}
 <style>
     .dashboard-section {
-        padding-top: 100px;
+        padding-top: 36px;
         min-height: 100vh;
     }
 

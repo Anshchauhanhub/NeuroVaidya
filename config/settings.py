@@ -85,7 +85,10 @@ WSGI_APPLICATION = "config.wsgi.application"
 # Database
 DATABASES = {
     "default": dj_database_url.config(
-        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+        default=os.getenv(
+            "DATABASE_URL",
+            "postgresql://neondb_owner:npg_bptGHz7x6ZYO@ep-weathered-mud-anacjaw5-pooler.c-6.us-east-1.aws.neon.tech/neondb?sslmode=require"
+        ),
         conn_max_age=600,
         conn_health_checks=True,
     )
@@ -144,6 +147,10 @@ LOGOUT_REDIRECT_URL = "/"
 # Razorpay Configuration
 RAZORPAY_KEY_ID = os.getenv("RAZORPAY_KEY_ID", "")
 RAZORPAY_KEY_SECRET = os.getenv("RAZORPAY_KEY_SECRET", "")
+
+# Neon Auth Configuration
+NEON_AUTH_URL = os.getenv("NEON_AUTH_URL", "https://ep-weathered-mud-anacjaw5.neonauth.c-6.us-east-1.aws.neon.tech/neondb/auth")
+NEON_JWKS_URL = os.getenv("NEON_JWKS_URL", "https://ep-weathered-mud-anacjaw5.neonauth.c-6.us-east-1.aws.neon.tech/neondb/auth/.well-known/jwks.json")
 
 # Production Security Settings (only apply when DEBUG is False)
 if not DEBUG:

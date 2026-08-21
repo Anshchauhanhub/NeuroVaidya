@@ -5,28 +5,51 @@
 
 {% block content %}
 <section class="section catalog-section">
+    <!-- Header Title & Tagline -->
+    <div class="catalog-header">
+        <h1 class="catalog-main-title">Find Medicines</h1>
+        <p class="catalog-sub-title">Search for genuine medicines and get them delivered right to your doorstep.</p>
+    </div>
 
-    <!-- Search & Filters -->
+    <!-- Search & Controls Bar -->
     <div class="catalog-controls">
         <div class="search-box">
-            <input type="text" id="searchInput" placeholder="Search medicines...">
+            <svg class="search-box-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="searchInput" placeholder="Search medicines by name, generic, or brand...">
         </div>
         <div class="filter-box">
             <button id="searchBtn" class="search-btn">Search</button>
-            <select id="sortFilter">
-                <option value="name">Sort by Name</option>
-                <option value="price-low">Price: Low to High</option>
-                <option value="price-high">Price: High to Low</option>
-                <option value="discount">Best Discount</option>
-                <option value="platform">Platform A-Z</option>
-            </select>
+            <div class="select-wrapper">
+                <select id="sortFilter">
+                    <option value="name">Sort by Name</option>
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="price-high">Price: High to Low</option>
+                    <option value="discount">Best Discount</option>
+                    <option value="platform">Platform A-Z</option>
+                </select>
+            </div>
         </div>
+    </div>
+
+    <!-- Category Pills Navigation -->
+    <div class="category-pills-bar">
+        <button class="cat-pill active" onclick="filterCategory(this, 'all')">All Medicines</button>
+        <button class="cat-pill" onclick="filterCategory(this, 'pain')">Pain Relief</button>
+        <button class="cat-pill" onclick="filterCategory(this, 'fever')">Fever</button>
+        <button class="cat-pill" onclick="filterCategory(this, 'antibiotics')">Antibiotics</button>
+        <button class="cat-pill" onclick="filterCategory(this, 'vitamins')">Vitamins & Supplements</button>
+        <button class="cat-pill" onclick="filterCategory(this, 'diabetes')">Diabetes Care</button>
     </div>
 
     <!-- Products Grid -->
     <div class="products-grid" id="productsGrid">
-        <!-- Products loaded via JS -->
-        <div class="loading">Loading medicines...</div>
+        <div class="loading">
+            <div class="spinner"></div>
+            <span>Loading medicines...</span>
+        </div>
     </div>
 </section>
 {% endblock %}
@@ -34,178 +57,324 @@
 {% block extra_css %}
 <style>
     .catalog-section {
-        padding-top: 180px;
+        padding-top: 36px;
+        padding-bottom: 60px;
         min-height: 100vh;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+
+    .catalog-header {
+        margin-bottom: 30px;
+    }
+
+    .catalog-main-title {
+        font-size: 2.2rem;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        color: #FFFFFF;
+        margin-bottom: 8px;
+    }
+
+    .catalog-sub-title {
+        color: rgba(255, 255, 255, 0.55);
+        font-size: 0.98rem;
     }
 
     .catalog-controls {
         display: flex;
-        gap: 20px;
-        margin-bottom: 40px;
-        max-width: 1200px;
-        margin: 0 auto 40px;
+        gap: 16px;
+        margin-bottom: 24px;
+        align-items: center;
     }
 
     .search-box {
         flex: 1;
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .search-box-icon {
+        position: absolute;
+        left: 18px;
+        color: rgba(255, 255, 255, 0.4);
+        pointer-events: none;
     }
 
     .search-box input {
         width: 100%;
-        padding: 15px 20px;
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 8px;
-        color: #fff;
-        font-size: 1rem;
+        padding: 16px 20px 16px 50px;
+        background: #12151D;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        color: #FFFFFF;
+        font-size: 0.95rem;
+        font-family: inherit;
+        outline: none;
+        transition: all 0.25s ease;
+    }
+
+    .search-box input:focus {
+        border-color: var(--vaidya-gold, #B8860B);
+        box-shadow: 0 0 0 3px rgba(184, 134, 11, 0.15);
+        background: #171A24;
     }
 
     .filter-box {
         display: flex;
-        gap: 15px;
+        gap: 12px;
     }
 
-    .filter-box select {
-        padding: 15px 20px;
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 8px;
-        color: #fff;
+    .search-btn {
+        padding: 0 28px;
+        height: 52px;
+        background: var(--vaidya-gold, #B8860B);
+        border: none;
+        border-radius: 12px;
+        color: #000000;
+        font-size: 0.95rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        white-space: nowrap;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .search-btn:hover {
+        background: #C59B27;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(184, 134, 11, 0.3);
+    }
+
+    .select-wrapper select {
+        height: 52px;
+        padding: 0 38px 0 18px;
+        background: #12151D;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        color: rgba(255, 255, 255, 0.9);
         font-size: 0.9rem;
+        font-family: inherit;
+        outline: none;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 14px center;
     }
 
-    .filter-box select option {
-        background: #1a1a1a;
-        color: #fff;
+    .select-wrapper select:hover {
+        border-color: rgba(255, 255, 255, 0.25);
     }
 
+    .category-pills-bar {
+        display: flex;
+        gap: 10px;
+        overflow-x: auto;
+        padding-bottom: 15px;
+        margin-bottom: 30px;
+        scrollbar-width: none;
+    }
+    .category-pills-bar::-webkit-scrollbar { display: none; }
+
+    .cat-pill {
+        padding: 10px 20px;
+        background: #12151D;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 30px;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.88rem;
+        font-weight: 500;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: all 0.25s ease;
+    }
+
+    .cat-pill:hover {
+        background: rgba(255, 255, 255, 0.08);
+        color: #FFFFFF;
+    }
+
+    .cat-pill.active {
+        background: var(--vaidya-gold, #B8860B);
+        color: #FFFFFF;
+        border-color: var(--vaidya-gold, #B8860B);
+        font-weight: 700;
+        box-shadow: 0 0 15px rgba(184, 134, 11, 0.25);
+    }
+
+    /* Products Grid Layout */
     .products-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        gap: 30px;
-        max-width: 1200px;
-        margin: 0 auto;
-        align-content: start;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 24px;
     }
 
     .product-card {
-        background: linear-gradient(145deg, #1a1a1a, #0d0d0d);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 16px;
+        background: #080808;
+        border: 1px solid #1C1C1E;
+        border-radius: 14px;
         overflow: hidden;
-        transition: all 0.3s;
         display: flex;
         flex-direction: column;
+        transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+        position: relative;
     }
 
     .product-card:hover {
-        transform: translateY(-5px);
-        border-color: var(--vaidya-gold);
+        transform: translateY(-4px);
+        border-color: #B8860B;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8), 0 0 15px rgba(184, 134, 11, 0.2);
     }
 
-    .product-img {
+    .product-img-box {
         width: 100%;
-        height: 200px;
-        object-fit: contain;
-        background: #ffffff;
-        padding: 10px;
+        height: 180px;
+        background: #FFFFFF;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
         box-sizing: border-box;
     }
 
+    .product-img {
+        max-width: 90%;
+        max-height: 140px;
+        object-fit: contain;
+        width: auto;
+        height: auto;
+    }
+
     .product-info {
-        padding: 25px;
+        padding: 18px 16px;
         display: flex;
         flex-direction: column;
+        align-items: center;
+        text-align: center;
         flex: 1;
+        background: #080808;
     }
 
     .product-name {
-        font-size: 1.2rem;
-        font-weight: 600;
-        margin-bottom: 5px;
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: #FFFFFF;
+        margin-bottom: 6px;
+        line-height: 1.35;
+        text-align: center;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        height: 2.7rem;
     }
 
     .product-manufacturer {
-        color: rgba(255, 255, 255, 0.5);
-        font-size: 0.85rem;
-        margin-bottom: 15px;
+        color: #8E8E93;
+        font-size: 0.82rem;
+        margin-bottom: 12px;
+        text-align: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 100%;
     }
 
-    .product-price {
+    .product-price-row {
         display: flex;
         align-items: center;
-        gap: 10px;
-        margin-bottom: 15px;
+        justify-content: center;
+        gap: 8px;
+        margin-bottom: 16px;
+        font-size: 0.88rem;
     }
 
     .price-current {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: var(--vaidya-gold);
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.9);
     }
 
     .price-mrp {
         text-decoration: line-through;
-        color: rgba(255, 255, 255, 0.4);
+        color: #636366;
+        font-size: 0.85rem;
     }
 
     .price-save {
-        background: rgba(0, 255, 0, 0.2);
-        color: #69db7c;
-        padding: 3px 8px;
-        border-radius: 4px;
-        font-size: 0.8rem;
-    }
-
-    .search-btn {
-        padding: 15px 35px;
-        background: var(--vaidya-gold);
-        border: none;
-        border-radius: 8px;
-        color: #000;
-        font-size: 1rem;
+        background: rgba(16, 185, 129, 0.15);
+        color: #10B981;
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        padding: 2px 7px;
+        border-radius: 6px;
+        font-size: 0.78rem;
         font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s;
-        white-space: nowrap;
-    }
-
-    .search-btn:hover {
-        background: #e6a800;
-        transform: scale(1.03);
     }
 
     .add-to-cart-btn {
         width: 100%;
-        padding: 12px;
+        padding: 10px 14px;
         background: transparent;
-        border: 1px solid var(--vaidya-gold);
-        color: var(--vaidya-gold);
+        border: 1px solid #B8860B;
+        color: #B8860B;
         border-radius: 8px;
+        font-size: 0.88rem;
+        font-weight: 600;
         cursor: pointer;
-        transition: all 0.3s;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        box-sizing: border-box;
         margin-top: auto;
     }
 
     .add-to-cart-btn:hover {
-        background: var(--vaidya-gold);
-        color: #000;
+        background: #B8860B;
+        color: #000000;
+        box-shadow: 0 4px 15px rgba(184, 134, 11, 0.3);
     }
 
     .loading {
         grid-column: 1 / -1;
         text-align: center;
-        padding: 50px;
+        padding: 60px 20px;
         color: rgba(255, 255, 255, 0.5);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .spinner {
+        width: 32px;
+        height: 32px;
+        border: 3px solid rgba(184, 134, 11, 0.2);
+        border-top-color: var(--vaidya-gold, #B8860B);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
     }
 
     .prescription-badge {
-        background: rgba(255, 100, 100, 0.2);
-        color: #ff6b6b;
-        padding: 3px 8px;
+        background: rgba(239, 68, 68, 0.15);
+        color: #EF4444;
+        padding: 2px 6px;
         border-radius: 4px;
-        font-size: 0.75rem;
-        margin-left: 10px;
+        font-size: 0.7rem;
+        font-weight: 700;
+        border: 1px solid rgba(239, 68, 68, 0.3);
     }
 </style>
 {% endblock %}
@@ -213,8 +382,29 @@
 {% block extra_js %}
 <script>
     let allMedicines = [];
-    let categories = [];
-    let searchTimeout = null;
+    let selectedCategory = 'all';
+
+    function filterCategory(btn, category) {
+        document.querySelectorAll('.cat-pill').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        selectedCategory = category;
+
+        if (category === 'all') {
+            renderMedicines(allMedicines);
+        } else {
+            const filtered = allMedicines.filter(med => {
+                const name = med.name.toLowerCase();
+                const cat = (med.category_name || '').toLowerCase();
+                if (category === 'pain') return name.includes('paracetamol') || name.includes('ibuprofen') || name.includes('pain') || cat.includes('pain');
+                if (category === 'fever') return name.includes('paracetamol') || name.includes('fever') || name.includes('dolo');
+                if (category === 'antibiotics') return name.includes('azithromycin') || name.includes('amoxicillin') || cat.includes('antibiotic');
+                if (category === 'vitamins') return name.includes('vitamin') || name.includes('zinc') || name.includes('calcium') || cat.includes('supplement');
+                if (category === 'diabetes') return name.includes('metformin') || name.includes('insulin') || cat.includes('diabetes');
+                return true;
+            });
+            renderMedicines(filtered);
+        }
+    }
 
     async function loadMedicines() {
         try {
@@ -222,7 +412,7 @@
             allMedicines = await response.json();
             renderMedicines(allMedicines);
         } catch (error) {
-            document.getElementById('productsGrid').innerHTML = '<div class="loading">Error loading medicines</div>';
+            document.getElementById('productsGrid').innerHTML = '<div class="loading"><span>Error loading medicines</span></div>';
         }
     }
 
@@ -277,15 +467,18 @@
         if (filtered.length > 0) {
             htmlStr = renderMedicines(filtered, false);
         } else if (query.length <= 2) {
-            htmlStr = '<div class="loading">Type a medicine name and click Search</div>';
+            htmlStr = '<div class="loading"><span>Type a medicine name and click Search</span></div>';
         }
 
         if (query.length > 2) {
             htmlStr += `
-            <div style="grid-column: 1 / -1; margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
-                <h3 style="color: var(--vaidya-gold); margin-bottom: 20px;">Live Market Results</h3>
-                <div id="externalResultsGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px;">
-                    <div class="loading">Searching across platforms (1mg, PharmEasy...)...</div>
+            <div style="grid-column: 1 / -1; margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 24px;">
+                <h3 style="color: var(--vaidya-gold); margin-bottom: 20px; font-size: 1.3rem;">Live Market Results</h3>
+                <div id="externalResultsGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 22px;">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <span>Searching live across 1mg & PharmEasy...</span>
+                    </div>
                 </div>
             </div>`;
         }
@@ -296,21 +489,17 @@
             (async () => {
                 const externalGrid = document.getElementById('externalResultsGrid');
                 const cacheKey = `search_cache_${query}`;
-                const cacheExpiry = 4 * 60 * 60 * 1000; // 4 hours in ms
+                const cacheExpiry = 4 * 60 * 60 * 1000;
                 
-                // 1. Check LocalStorage Cache
                 const cachedData = localStorage.getItem(cacheKey);
                 if (cachedData) {
                     try {
                         const parsed = JSON.parse(cachedData);
                         const now = new Date().getTime();
                         if (now - parsed.timestamp < cacheExpiry) {
-                            console.log(`DEBUG: Serving results for '${query}' from LocalStorage`);
                             lastExternalResults = parsed.results;
                             const sorted = sortResults(lastExternalResults);
                             externalGrid.innerHTML = renderMedicines(sorted, true);
-                            
-                            // Add a little "Cached" badge or just return
                             return;
                         }
                     } catch (e) {
@@ -319,7 +508,6 @@
                 }
 
                 try {
-                    console.log(`DEBUG: Fetching live results for '${query}'...`);
                     const response = await fetch(`/api/search/external/live/?q=${encodeURIComponent(query)}`);
                     if (!response.ok) {
                         const errData = await response.json().catch(() => ({}));
@@ -327,16 +515,13 @@
                     }
                     
                     const data = await response.json();
-                    console.log(`DEBUG: API response received:`, data);
                     
                     if (data.results && data.results.length > 0) {
                         lastExternalResults = data.results;
                         const sorted = sortResults(lastExternalResults);
                         const html = renderMedicines(sorted, true);
-                        console.log(`DEBUG: Rendered HTML length: ${html.length}`);
                         externalGrid.innerHTML = html;
                         
-                        // 2. Save to LocalStorage Cache
                         const cacheEntry = {
                             timestamp: new Date().getTime(),
                             results: data.results
@@ -346,12 +531,12 @@
                          throw new Error(data.error + (data.details ? ": " + data.details : ""));
                     } else {
                         lastExternalResults = [];
-                        externalGrid.innerHTML = '<div class="loading">No external results found</div>';
+                        externalGrid.innerHTML = '<div class="loading"><span>No external results found</span></div>';
                     }
                 } catch (err) {
                     console.error("External search failed:", err);
                     lastExternalResults = [];
-                    if (externalGrid) externalGrid.innerHTML = `<div class="loading">Live search unavailable. <br><small style="color:rgba(255,100,100,0.7)">Error: ${err.message}</small></div>`;
+                    if (externalGrid) externalGrid.innerHTML = `<div class="loading"><span>Live search unavailable.</span><small style="color:rgba(239,68,68,0.8); font-size:0.85rem;">Error: ${err.message}</small></div>`;
                 }
             })();
         }
@@ -360,34 +545,42 @@
     function renderMedicines(medicines, isExternal = false) {
         let html = '';
         if (medicines.length === 0) {
-            html = '<div class="loading">No medicines found</div>';
+            html = '<div class="loading"><span>No medicines found</span></div>';
         } else {
             html = medicines.map(med => {
-                const placeholderImg = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjZjhmOWY5Ij48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIvPjxwYXRoIGQ9Ik0xMDAgMTM0YTMyIDMyIDAgMSAxIDAtNjQgMzIgMzIgMCAwIDEgMCA2NHptMC01NmEyNCAyNCAwIDEgMCAwIDQ4IDI0IDI0IDAgMCAwIDAtNDh6IiBmaWxsPSIjY2RjZWNlIi8+PC9zdmc+";
+                const placeholderImg = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBmaWxsPSIjRkZGRkZGIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIvPjxwYXRoIGQ9Ik0xMDAgMTM0YTMyIDMyIDAgMSAxIDAtNjQgMzIgMzIgMCAwIDEgMCA2NHptMC01NmEyNCAyNCAwIDEgMCAwIDQ4IDI0IDI0IDAgMCAwIDAtNDh6IiBmaWxsPSIjRERERERGIi8+PC9zdmc+";
                 const img = med.image || med.image_url || placeholderImg;
                 const name = med.name;
-                const mfg = med.manufacturer || med.source_site || '';
+                let rawMfg = med.manufacturer || med.dosage_form || med.source_site || 'Tata 1mg';
+                if (!rawMfg.toLowerCase().startsWith('by') && !rawMfg.toLowerCase().startsWith('tata') && !rawMfg.toLowerCase().startsWith('pharmeasy')) {
+                    rawMfg = 'By' + rawMfg;
+                }
+                const mfg = rawMfg;
                 const price = med.price ? String(med.price).replace(/[^0-9.]/g, '') : '0';
                 const mrp = med.mrp ? String(med.mrp).replace(/[^0-9.]/g, '') : price;
-                const savings = (parseFloat(mrp) - parseFloat(price)).toFixed(1);
-                const showSave = savings > 0;
+                const savingsVal = (parseFloat(mrp) - parseFloat(price)).toFixed(1);
+                const showSave = parseFloat(savingsVal) > 0;
+                const savings = parseFloat(savingsVal) % 1 === 0 ? parseInt(savingsVal) : savingsVal;
 
                 const ctaBtn = isExternal
-                    ? `<a href="${med.source_url}" target="_blank" class="add-to-cart-btn" style="text-align:center; display:block; text-decoration:none;">View on ${med.source_site}</a>`
-                    : `<button class="add-to-cart-btn" onclick="addToCart(${med.id})">${med.in_stock !== false ? 'Add to Cart' : 'Out of Stock'}</button>`;
+                    ? `<a href="${med.source_url || '#'}" target="_blank" class="add-to-cart-btn">View on ${med.source_site || 'Store'}</a>`
+                    : `<button class="add-to-cart-btn" onclick="addToCart(${med.id})">
+                        ${med.in_stock !== false ? 'Add to Cart' : 'Out of Stock'}
+                       </button>`;
 
                 return `
-                <div class="product-card" style="${isExternal ? 'border-color: #69db7c;' : ''}">
-                    <img src="${img}" alt="${name}" class="product-img">
+                <div class="product-card">
+                    <div class="product-img-box">
+                        <img src="${img}" alt="${name}" class="product-img" onerror="this.src='${placeholderImg}'">
+                    </div>
                     <div class="product-info">
-                        <h3 class="product-name">
+                        <h3 class="product-name" title="${name}">
                             ${name}
-                            ${med.requires_prescription ? '<span class="prescription-badge">Rx</span>' : ''}
                         </h3>
                         <p class="product-manufacturer">${mfg}</p>
-                        <div class="product-price">
+                        <div class="product-price-row">
                             <span class="price-current">₹${price}</span>
-                            ${mrp > price ? `<span class="price-mrp">₹${mrp}</span>` : ''}
+                            ${parseFloat(mrp) > parseFloat(price) ? `<span class="price-mrp">₹${mrp}</span>` : ''}
                             ${showSave ? `<span class="price-save">Save ₹${savings}</span>` : ''}
                         </div>
                         ${ctaBtn}
@@ -395,6 +588,10 @@
                 </div>
                 `;
             }).join('');
+        }
+        
+        if (!isExternal && document.getElementById('productsGrid')) {
+            document.getElementById('productsGrid').innerHTML = html;
         }
         return html;
     }

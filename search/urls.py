@@ -8,4 +8,5 @@ urlpatterns = [
     path('ai-chat/', views.AIChatView.as_view(), name='ai_chat'),
     path('external/live/', views.LiveMarketSearchView.as_view(), name='live_market_search'),
     path('external/status/', views.LiveMarketStatusView.as_view(), name='live_market_status'),
+    path('nearby/', views.NearbySearchView.as_view(), name='nearby_search'),
 ]

@@ -20,6 +20,7 @@
         <ul class="nav-links">
             <li><a href="#about">About Us</a></li>
             <li><a href="#products">Products</a></li>
+            <li><a href="{% url 'nearby' %}">Nearby</a></li>
             <li><a href="#testimonials">Testimonials</a></li>
             <li><a href="#contact">Contact</a></li>
         </ul>
@@ -45,6 +46,7 @@
             </p>
             <div class="hero-cta">
                 <a href="#products" class="btn-primary">Explore Products</a>
+                <a href="{% url 'nearby' %}" class="btn-secondary">Find Nearby Care</a>
                 <a href="#about" class="btn-secondary">Learn More</a>
             </div>
         </div>
@@ -232,7 +234,7 @@
             <ul class="footer-links">
                 <li><a href="#">Privacy Policy</a></li>
                 <li><a href="#">Prescription Upload</a></li>
-                <li><a href="#">Store Locator</a></li>
+                <li><a href="{% url 'nearby' %}">Store Locator</a></li>
                 <li><a href="#">Contact Us</a></li>
             </ul>
             <p class="footer-copyright">© 2026 NeuroVaidya. All rights reserved. Licensed Pharmaceutical Retailer.</p>

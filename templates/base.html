@@ -5,373 +5,341 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description"
-        content="NeuroVaidya - Where Ancient Wisdom Meets Modern Medicine. Direct medicine delivery for patients.">
-    <title>{% block title %}NeuroVaidya{% endblock %} | Ancient Wisdom, Modern Medicine</title>
+    <meta name="description" content="NeuroVaidya - Where Ancient Wisdom Meets Modern Medicine.">
+    <title>{% block title %}NeuroVaidya{% endblock %}</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌿</text></svg>">
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     {% block extra_css %}{% endblock %}
+    <style>
+        /* Modern App Layout with Left Vertical Sidebar */
+        body {
+            background-color: #0B0D12;
+            color: #FFFFFF;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .app-container {
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        /* Vertical Sidebar */
+        .sidebar {
+            width: 250px;
+            background: #000000;
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            flex-direction: column;
+            padding: 24px 16px;
+            flex-shrink: 0;
+            justify-content: space-between;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 35px;
+            padding: 0 10px;
+            text-decoration: none;
+        }
+
+        .sidebar-brand-text {
+            font-size: 1.55rem;
+            font-weight: 800;
+            color: #FFFFFF;
+            letter-spacing: -0.02em;
+        }
+
+        .sidebar-brand-text span {
+            color: #B8860B;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .sidebar-tab {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            color: rgba(255, 255, 255, 0.65);
+            text-decoration: none;
+            font-size: 0.92rem;
+            font-weight: 600;
+            transition: all 0.25s ease;
+            cursor: pointer;
+            border: 1px solid transparent;
+            background: transparent;
+        }
+
+        .sidebar-tab svg {
+            color: rgba(255, 255, 255, 0.5);
+            transition: color 0.25s ease;
+        }
+
+        .sidebar-tab:hover {
+            background: rgba(255, 255, 255, 0.04);
+            color: #FFFFFF;
+        }
+
+        .sidebar-tab:hover svg {
+            color: #B8860B;
+        }
+
+        .sidebar-tab.active {
+            background: rgba(184, 134, 11, 0.15);
+            color: #B8860B;
+            border: 1px solid rgba(184, 134, 11, 0.35);
+            box-shadow: 0 4px 15px rgba(184, 134, 11, 0.15);
+        }
+
+        .sidebar-tab.active svg {
+            color: #B8860B;
+        }
+
+        .sidebar-footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 16px;
+            margin-top: auto;
+        }
+
+        /* Main Content Viewport */
+        .main-viewport {
+            flex: 1;
+            height: 100vh;
+            overflow-y: auto;
+            background: #000000;
+            position: relative;
+        }
+
+        .main-viewport-content {
+            min-height: 100%;
+        }
+
+        /* Upload Modal Fixes */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-overlay.open { display: flex; }
+        .modal-container {
+            background: #151822;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            padding: 24px;
+        }
+    </style>
 </head>
 
 <body>
-    <!-- Header Wrapper -->
-    <header class="main-header-wrapper">
-        <!-- Professional Navigation Header -->
-        <nav class="nav" id="navbar">
-            <!-- Logo Section -->
-            <a href="{% url 'home' %}" class="nav-logo">
-                <span class="logo-text">Neuro<span>Vaidya</span></span>
-            </a>
+    <div class="app-container">
+        <!-- Vertical Sidebar -->
+        <aside class="sidebar">
+            <div>
+                <!-- Brand Logo -->
+                <a href="{% url 'catalog' %}" class="sidebar-brand" style="text-decoration: none; padding-left: 4px;">
+                    <span class="sidebar-brand-text">Neuro<span>Vaidya</span></span>
+                </a>
 
-            <!-- Location Selector -->
-            <button class="location-selector" id="locationBtn" onclick="openLocationModal()">
-                <span class="location-icon-badge">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                        fill="currentColor">
-                        <path
-                            d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
-                    </svg>
-                </span>
-                <span class="location-pincode" id="currentPincode">110001</span>
-                <span class="location-area" id="currentArea">New Delhi</span>
-                <svg class="location-arrow" xmlns="http://www.w3.org/2000/svg" width="12" height="12"
-                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="m6 9 6 6 6-6" />
-                </svg>
-            </button>
+                <!-- Vertical Tabs -->
+                <nav class="sidebar-nav">
+                    <!-- Tab 1: AI Agent -->
+                    <button class="sidebar-tab" id="tabAiAgent" onclick="toggleAICopilot()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2 2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/>
+                            <path d="M4 11a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-7z"/>
+                            <circle cx="9" cy="14" r="1"/>
+                            <circle cx="15" cy="14" r="1"/>
+                        </svg>
+                        <span>AI Agent Chat</span>
+                    </button>
 
-            <!-- Spacer for alignment -->
-            <div class="nav-spacer"></div>
+                    <!-- Tab 2: Medicines -->
+                    <a href="{% url 'catalog' %}" class="sidebar-tab {% if request.resolver_match.url_name == 'catalog' %}active{% endif %}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                            <polyline points="9 22 9 12 15 12 15 22"/>
+                        </svg>
+                        <span>Medicines</span>
+                    </a>
 
-            <!-- Header Actions Container -->
-            <div class="nav-actions">
-                <!-- Upload Prescription Button -->
-                <button class="upload-prescription-btn" onclick="openUploadModal()">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                        <polyline points="17 8 12 3 7 8" />
-                        <line x1="12" y1="3" x2="12" y2="15" />
-                    </svg>
-                    <span>Upload Now</span>
-                </button>
+                    <!-- Tab 3: Nearby Pharmacy -->
+                    <a href="{% url 'nearby' %}" class="sidebar-tab {% if request.resolver_match.url_name == 'nearby' %}active{% endif %}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                            <circle cx="12" cy="10" r="3"/>
+                        </svg>
+                        <span>Nearby Pharmacy</span>
+                    </a>
 
+                    <!-- Tab 4: Upload Prescription to Scan Medicine -->
+                    <button class="sidebar-tab" onclick="openUploadModal()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="17 8 12 3 7 8"/>
+                            <line x1="12" y1="3" x2="12" y2="15"/>
+                        </svg>
+                        <span>Upload Prescription</span>
+                    </button>
+                </nav>
+            </div>
 
-
-                <!-- Cart Icon with Badge -->
+            <!-- Sidebar Footer: End Option Account -->
+            <div class="sidebar-footer">
                 {% if user.is_authenticated %}
-                <a href="{% url 'cart' %}" class="nav-cart" id="navCart">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="9" cy="21" r="1" />
-                        <circle cx="20" cy="21" r="1" />
-                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                <a href="{% url 'dashboard' %}" class="sidebar-tab {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
                     </svg>
-                    <span class="cart-badge" id="cartBadge">0</span>
+                    <span>Account ({{ user.username }})</span>
+                </a>
+                {% else %}
+                <a href="{% url 'login' %}" class="sidebar-tab">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+                        <polyline points="10 17 15 12 10 7"/>
+                        <line x1="15" y1="12" x2="3" y2="12"/>
+                    </svg>
+                    <span>Account (Login)</span>
                 </a>
                 {% endif %}
-
-                <!-- User Account -->
-                {% if user.is_authenticated %}
-                <div class="nav-account-dropdown">
-                    <button class="nav-account-btn" onclick="toggleAccountDropdown()" aria-haspopup="true"
-                        aria-expanded="false">
-                        <div class="account-avatar">
-                            {{ user.username|slice:":1"|upper }}
-                        </div>
-                        <span class="account-name">Account</span>
-                        <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <path d="m6 9 6 6 6-6" />
-                        </svg>
-                    </button>
-                    <div class="account-dropdown-menu" id="accountDropdown">
-                        <div class="dropdown-header">
-                            <div class="dropdown-avatar">{{ user.username|slice:":1"|upper }}</div>
-                            <div class="dropdown-user-info">
-                                <span class="dropdown-username">{{ user.username }}</span>
-                                <span class="dropdown-email">{{ user.email|default:"Patient" }}</span>
-                            </div>
-                        </div>
-                        <div class="dropdown-divider"></div>
-                        <a href="{% url 'dashboard' %}" class="dropdown-item">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round">
-                                <circle cx="12" cy="8" r="5" />
-                                <path d="M20 21a8 8 0 0 0-16 0" />
-                            </svg>
-                            <span>My Profile</span>
-                        </a>
-                        <a href="{% url 'dashboard' %}#orders" class="dropdown-item">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round">
-                                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-                                <line x1="3" y1="6" x2="21" y2="6"></line>
-                                <path d="M16 10a4 4 0 0 1-8 0"></path>
-                            </svg>
-                            <span>My Orders</span>
-                        </a>
-                        <a href="{% url 'dashboard' %}#wallet" class="dropdown-item">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round">
-                                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
-                                <line x1="1" y1="10" x2="23" y2="10"></line>
-                            </svg>
-                            <span>Dava Wallet</span>
-                        </a>
-                        <a href="{% url 'dashboard' %}#patients" class="dropdown-item">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round">
-                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                                <circle cx="9" cy="7" r="4"></circle>
-                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                            </svg>
-                            <span>Patients</span>
-                        </a>
-                        <a href="{% url 'dashboard' %}#refer" class="dropdown-item">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round">
-                                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-                            </svg>
-                            <span>Refer and Earn</span>
-                        </a>
-                        <a href="{% url 'dashboard' %}#notifications" class="dropdown-item">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round">
-                                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-                            </svg>
-                            <span>Notifications</span>
-                        </a>
-
-                        <a href="{% url 'dashboard' %}#help" class="dropdown-item">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
-                                <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                            </svg>
-                            <span>Need Help?</span>
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <form action="{% url 'logout' %}" method="post" class="dropdown-logout-form">
-                            {% csrf_token %}
-                            <button type="submit" class="dropdown-item dropdown-logout">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round">
-                                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                                    <polyline points="16 17 21 12 16 7" />
-                                    <line x1="21" x2="9" y1="12" y2="12" />
-                                </svg>
-                                <span>Logout</span>
-                            </button>
-                        </form>
-                    </div>
-                </div>
-                {% else %}
-                <a href="{% url 'login' %}" class="nav-portal">Login / Register</a>
-                {% endif %}
             </div>
+        </aside>
 
-            <!-- Mobile Menu Toggle -->
-            <button class="mobile-menu-toggle" id="mobileMenuToggle" onclick="toggleMobileMenu()">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-        </nav>
-
-        <!-- Secondary Navigation (Category Tabs) -->
-        <nav class="secondary-nav">
-            <div class="secondary-nav-container">
-                <!-- Medicines Tab -->
-                <div class="category-dropdown-wrapper">
-                    <button class="category-btn">
-                        Medicines
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2">
-                            <path d="m6 9 6 6 6-6" />
-                        </svg>
-                    </button>
-                    <div class="category-dropdown-content">
-                        <a href="{% url 'catalog' %}">All Medicines</a>
-                        <a href="{% url 'catalog' %}?category=health-conditions">Health Conditions</a>
-                        <a href="{% url 'catalog' %}?category=ayurveda">Ayurveda</a>
-                        <a href="{% url 'catalog' %}?category=otc">OTC</a>
-                    </div>
-                </div>
-                <!-- Spacer to push Neuro AI button to right -->
-                <div style="flex:1;"></div>
-
-                <!-- Neuro AI Copilot Toggle -->
-                <button class="neuro-ai-nav-toggle" id="neuroAiNavToggle" onclick="handleNeuroAiToggle()">
-                    <span>Neuro AI</span>
-                    <div class="neuro-ai-pulse" style="left: 17%; top: 78%; width: 8px; height: 8px;"></div>
-                </button>
-            </div>
-        </nav>
-
-        <style>
-            .secondary-nav-container {
-                display: flex;
-                align-items: center;
-            }
-
-            .neuro-ai-nav-toggle {
-                display: inline-flex;
-                align-items: center;
-                gap: 8px;
-                padding: 8px 20px;
-                background: linear-gradient(135deg, rgba(184, 134, 11, 0.1) 0%, rgba(184, 134, 11, 0.05) 100%);
-                border: 1px solid rgba(184, 134, 11, 0.3);
-                border-radius: 25px;
-                color: var(--vaidya-gold, #B8860B);
-                font-family: inherit;
-                font-size: 0.85rem;
-                font-weight: 600;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                position: relative;
-                overflow: hidden;
-                white-space: nowrap;
-                letter-spacing: 0.5px;
-            }
-
-            .neuro-ai-nav-toggle:hover {
-                background: linear-gradient(135deg, rgba(184, 134, 11, 0.2) 0%, rgba(184, 134, 11, 0.1) 100%);
-                border-color: rgba(184, 134, 11, 0.5);
-                box-shadow: 0 0 20px rgba(184, 134, 11, 0.2);
-                transform: translateY(-1px);
-            }
-
-            .neuro-ai-nav-toggle.active {
-                background: linear-gradient(135deg, var(--vaidya-gold, #B8860B) 0%, #d4a017 100%);
-                color: #000;
-                border-color: var(--vaidya-gold, #B8860B);
-                box-shadow: 0 0 25px rgba(184, 134, 11, 0.4);
-            }
-
-            .neuro-ai-nav-toggle.active svg {
-                stroke: #000;
-            }
-
-            .neuro-ai-pulse {
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                width: 6px;
-                height: 6px;
-                background: var(--vaidya-gold, #B8860B);
-                border-radius: 50%;
-                transform: translate(-50%, -50%);
-                opacity: 0;
-            }
-
-            .neuro-ai-nav-toggle:not(.active) .neuro-ai-pulse {
-                animation: navPulse 2s ease-in-out infinite;
-            }
-
-            @keyframes navPulse {
-
-                0%,
-                100% {
-                    opacity: 0;
-                    transform: translate(-50%, -50%) scale(1);
-                }
-
-                50% {
-                    opacity: 0.6;
-                    transform: translate(-50%, -50%) scale(3);
-                }
-            }
-
-            @media (max-width: 600px) {
-                .neuro-ai-nav-toggle span {
-                    display: none;
-                }
-
-                .neuro-ai-nav-toggle {
-                    padding: 8px 12px;
-                }
-            }
-        </style>
-    </header>
-
-    <!-- Mobile Navigation Menu -->
-    <div class="mobile-nav-menu" id="mobileNavMenu">
-        <div class="mobile-nav-content">
-            <a href="{% url 'catalog' %}" class="mobile-nav-link">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2">
-                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-                </svg>
-                Medicines
-            </a>
-            {% if user.is_authenticated %}
-            <a href="{% url 'cart' %}" class="mobile-nav-link">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2">
-                    <circle cx="9" cy="21" r="1" />
-                    <circle cx="20" cy="21" r="1" />
-                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
-                </svg>
-                Cart
-            </a>
-            <a href="{% url 'dashboard' %}" class="mobile-nav-link">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="8" r="5" />
-                    <path d="M20 21a8 8 0 0 0-16 0" />
-                </svg>
-                My Account
-            </a>
-            {% endif %}
-        </div>
+        <!-- Main Viewport Area -->
+        <main class="main-viewport">
+            {% block content %}{% endblock %}
+        </main>
     </div>
 
-    <!-- Location Modal -->
-    <div class="modal-overlay" id="locationModal">
-        <div class="modal-container location-modal-container">
-            <div class="modal-header">
-                <h3>Select Your Delivery Location</h3>
-                <button class="modal-close" onclick="closeLocationModal()">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2">
-                        <line x1="18" y1="6" x2="6" y2="18" />
-                        <line x1="6" y1="6" x2="18" y2="18" />
+    <!-- Full-Screen Black & Gold AI Agent Overlay -->
+    <div class="full-ai-agent-container" id="fullAiAgentContainer">
+        <!-- Top Bar Header -->
+        <div class="full-ai-header">
+            <div class="full-ai-brand">
+                <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#B8860B" stroke-width="2">
+                    <path d="M12 2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2 2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/>
+                    <path d="M4 11a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-7z"/>
+                    <circle cx="9" cy="14" r="1"/>
+                    <circle cx="15" cy="14" r="1"/>
+                </svg>
+                <span>Neuro <strong>AI Agent</strong></span>
+            </div>
+            <div class="full-ai-actions">
+                <button class="full-ai-btn-reset" onclick="resetFullAiChat()" title="Start New Chat">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+                    </svg>
+                    <span>New Chat</span>
+                </button>
+                <button class="full-ai-close-btn" onclick="toggleAICopilot()" title="Close">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
                     </svg>
                 </button>
             </div>
-            <div class="modal-body">
+        </div>
 
-                <div class="pincode-input-group">
-                    <label for="pincodeInput">Enter Pincode</label>
-                    <div class="pincode-input-wrapper">
-                        <input type="text" id="pincodeInput" placeholder="Enter 6-digit pincode" maxlength="6"
-                            pattern="[0-9]*">
-                        <button class="pincode-submit-btn" onclick="searchPincode()">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2">
-                                <polyline points="9 18 15 12 9 6" />
+        <!-- Centered Landing View -->
+        <div class="full-ai-landing" id="fullAiLanding">
+            <h1 class="full-ai-title">Tell me what's bothering you.</h1>
+            <p class="full-ai-subtitle">I'll help you understand it — calmly, clearly, and privately.</p>
+
+            <!-- Main Pill Input Form -->
+            <form class="full-ai-pill-box" id="fullAiLandingForm" onsubmit="handleFullAiLandingSubmit(event)">
+                <input type="text" id="fullAiLandingInput" class="full-ai-pill-input" placeholder="I have chest pain since this morning..." autocomplete="off">
+                <div class="full-ai-pill-actions">
+                    <button type="button" class="full-ai-mic-btn" id="fullAiLandingMicBtn" onclick="toggleVoiceInput('fullAiLandingInput', 'fullAiLandingMicBtn')" title="Voice dictation">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                            <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                            <line x1="12" y1="19" x2="12" y2="23"></line>
+                            <line x1="8" y1="23" x2="16" y2="23"></line>
+                        </svg>
+                    </button>
+                    <button type="submit" class="full-ai-send-btn" id="fullAiLandingSendBtn" title="Send message">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="22" y1="2" x2="11" y2="13"></line>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Common Questions Chips -->
+            <div class="full-ai-suggestions">
+                <div class="full-ai-suggestions-header">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#B8860B" stroke-width="2">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    </svg>
+                    <span>COMMON QUESTIONS</span>
+                </div>
+                <div class="full-ai-chips-list">
+                    <button type="button" class="full-ai-chip" onclick="sendQuickPrompt('My child has a cough')">My child has a cough</button>
+                    <button type="button" class="full-ai-chip" onclick="sendQuickPrompt('I need a doctor summary')">I need a doctor summary</button>
+                    <button type="button" class="full-ai-chip" onclick="sendQuickPrompt('My child has diarrhea')">My child has diarrhea</button>
+                </div>
+            </div>
+
+            <div class="full-ai-disclaimer">
+                General guidance, not a replacement for a doctor
+            </div>
+        </div>
+
+        <!-- Active Chat Body View -->
+        <div class="full-ai-chat-body" id="fullAiChatBody" style="display: none;">
+            <div class="full-ai-messages" id="fullAiMessages">
+                <!-- Chat messages appended dynamically -->
+            </div>
+
+            <!-- Bottom Sticky Pill Bar -->
+            <div class="full-ai-bottom-bar">
+                <form class="full-ai-pill-box bottom-pill" id="fullAiChatForm" onsubmit="handleFullAiChatSubmit(event)">
+                    <input type="text" id="fullAiChatInput" class="full-ai-pill-input" placeholder="Ask follow-up question..." autocomplete="off">
+                    <div class="full-ai-pill-actions">
+                        <button type="button" class="full-ai-mic-btn" id="fullAiChatMicBtn" onclick="toggleVoiceInput('fullAiChatInput', 'fullAiChatMicBtn')" title="Voice dictation">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                                <line x1="12" y1="19" x2="12" y2="23"></line>
+                                <line x1="8" y1="23" x2="16" y2="23"></line>
+                            </svg>
+                        </button>
+                        <button type="submit" class="full-ai-send-btn" id="fullAiChatSendBtn" title="Send message">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="22" y1="2" x2="11" y2="13"></line>
+                                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
                             </svg>
                         </button>
                     </div>
-                    <p class="pincode-error" id="pincodeError"></p>
-                </div>
-                <div class="recent-locations" id="recentLocations">
-                    <h4>Recent Locations</h4>
-                    <div class="recent-location-list" id="recentLocationList">
-                        <!-- Recent locations will be populated by JS -->
-                    </div>
+                </form>
+                <div class="full-ai-disclaimer-small">
+                    General guidance, not a replacement for a doctor
                 </div>
             </div>
         </div>
@@ -379,538 +347,631 @@
 
     <!-- Upload Prescription Modal -->
     <div class="modal-overlay" id="uploadModal">
-        <div class="modal-container upload-modal-container">
-            <div class="modal-header">
-                <h3>Upload Prescription</h3>
-                <button class="modal-close" onclick="closeUploadModal()">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2">
-                        <line x1="18" y1="6" x2="6" y2="18" />
-                        <line x1="6" y1="6" x2="18" y2="18" />
-                    </svg>
-                </button>
+        <div class="modal-container">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                <h3 style="margin:0; font-size:1.2rem;">Upload Prescription</h3>
+                <button onclick="closeUploadModal()" style="background:none; border:none; color:#fff; cursor:pointer;">✕</button>
             </div>
-            <div class="modal-body">
-                <div class="upload-dropzone" id="uploadDropzone"
-                    onclick="document.getElementById('prescriptionFile').click()">
-                    <div class="dropzone-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="1.5">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                            <polyline points="17 8 12 3 7 8" />
-                            <line x1="12" y1="3" x2="12" y2="15" />
-                        </svg>
-                    </div>
-                    <p class="dropzone-text">Drag & drop your prescription here</p>
-                    <p class="dropzone-subtext">or click to browse</p>
-                    <p class="dropzone-formats">Supported formats: JPG, PNG, PDF (Max 10MB)</p>
-                    <input type="file" id="prescriptionFile" accept="image/*,.pdf" hidden
-                        onchange="handleFileUpload(this)">
-                </div>
-                <div class="upload-preview" id="uploadPreview" style="display: none;">
-                    <div class="preview-image-container" id="previewContainer"></div>
-                    <div class="preview-info">
-                        <p class="preview-filename" id="previewFilename"></p>
-                        <button class="preview-remove" onclick="removeUploadedFile()">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2">
-                                <polyline points="3 6 5 6 21 6" />
-                                <path
-                                    d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                            </svg>
-                            Remove
-                        </button>
-                    </div>
-                </div>
-                <div class="upload-actions">
-                    <button class="upload-submit-btn" id="uploadSubmitBtn" onclick="submitPrescription()" disabled>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2">
-                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                            <polyline points="22 4 12 14.01 9 11.01" />
-                        </svg>
-                        Submit Prescription
-                    </button>
-                </div>
-                <div class="upload-note">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10" />
-                        <line x1="12" y1="16" x2="12" y2="12" />
-                        <line x1="12" y1="8" x2="12.01" y2="8" />
-                    </svg>
-                    <span>Our pharmacist will review your prescription and add medicines to your cart.</span>
-                </div>
+            <div style="border:2px dashed rgba(255,255,255,0.2); padding:30px; text-align:center; border-radius:12px; cursor:pointer;" onclick="document.getElementById('prescriptionFile').click()">
+                <p style="margin:0; font-weight:600;">Click to upload prescription photo or PDF</p>
+                <input type="file" id="prescriptionFile" accept="image/*,.pdf" hidden onchange="alert('Prescription uploaded! Scanning medicines...')">
             </div>
         </div>
     </div>
 
-    <!-- Global Split Layout (Comet-style) -->
-    <div class="nv-split-layout" id="nvSplitLayout">
-        <div class="nv-main-content" id="nvMainContent">
-            {% block content %}{% endblock %}
-
-            <!-- Footer -->
-            <footer class="footer" id="contact">
-                <div class="footer-content">
-                    <div class="footer-logo">
-                       <div class="footer-logo"><span class="logo-text">Neuro<span>Vaidya</span></span></div>
-                    </div>
-                    <ul class="footer-links">
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">Terms of Service</a></li>
-                        <li><a href="#">Contact Us</a></li>
-                    </ul>
-                    <p class="footer-copyright">© 2026 NeuroVaidya. All rights reserved. Licensed Pharmaceutical
-                        Retailer.</p>
-                </div>
-            </footer>
-        </div>
-
-        <!-- Neuro AI Copilot Sidebar -->
-        <div class="nv-copilot-sidebar" id="nvCopilotSidebar">
-            <div class="nv-copilot-header"
-                style="justify-content: flex-end; background: transparent; border-bottom: none; padding-bottom: 0;">
-                <button class="nv-copilot-close" onclick="toggleAICopilot()" title="Close">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                </button>
-            </div>
-            <div class="nv-copilot-body" id="nvCopilotBody">
-                <div class="nv-msg nv-greeting">
-                    Hello! I'm <strong>Neuro AI</strong>, your medical assistant. Ask me anything about health,
-                    medicines, or treatments.
-                </div>
-            </div>
-            <div class="nv-copilot-footer">
-                <form class="nv-copilot-form" id="nvCopilotForm" onsubmit="sendAIMessage(event)">
-                    <input type="text" id="nvCopilotInput" class="nv-copilot-input"
-                        placeholder="Ask Neuro AI anything..." autocomplete="off" required>
-                    <button type="submit" class="nv-copilot-submit" id="nvCopilotSubmit">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="22" y1="2" x2="11" y2="13"></line>
-                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                        </svg>
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Neuro AI Copilot Styles -->
+    <!-- Styles for Full-Screen Black & Gold AI Agent -->
     <style>
-        /* Split Layout */
-        .nv-split-layout {
-            display: flex;
-            width: 100%;
-            min-height: calc(100vh - 120px);
-        }
-
-        .nv-main-content {
-            flex: 1;
-            min-width: 0;
-            transition: flex 0.4s cubic-bezier(.25, .8, .25, 1);
-            overflow-x: hidden;
-        }
-
-        .nv-split-layout.active .nv-main-content {
-            flex: 2.5;
-        }
-
-        /* Sidebar */
-        .nv-copilot-sidebar {
-            width: 0;
-            min-width: 0;
-            overflow: hidden;
-            opacity: 0;
-            background: var(--obsidian-black, #000000);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border-left: 1px solid rgba(184, 134, 11, 0.15);
+        .full-ai-agent-container {
+            position: fixed;
+            top: 0;
+            left: 250px;
+            right: 0;
+            bottom: 0;
+            background: #080A10;
+            background-image: 
+                radial-gradient(circle at 50% 35%, rgba(255, 183, 3, 0.07) 0%, transparent 60%),
+                radial-gradient(circle at 80% 80%, rgba(255, 183, 3, 0.03) 0%, transparent 50%);
+            z-index: 999;
             display: flex;
             flex-direction: column;
-            transition: width 0.4s cubic-bezier(.25, .8, .25, 1), min-width 0.4s cubic-bezier(.25, .8, .25, 1), opacity 0.3s ease 0.1s;
-            position: sticky;
-            top: 121px;
-            height: calc(100vh - 121px);
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.35s;
         }
 
-        .nv-split-layout.active .nv-copilot-sidebar {
-            flex: 1.5;
-            width: auto;
-            min-width: 440px;
+        @media (max-width: 768px) {
+            .full-ai-agent-container {
+                left: 0;
+            }
+        }
+
+        .full-ai-agent-container.open {
             opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
         }
 
-        /* Header */
-        .nv-copilot-header {
-            padding: 18px 22px;
+        .full-ai-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 18px 36px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-            background: rgba(0, 0, 0, 0.25);
+            background: rgba(8, 10, 16, 0.85);
+            backdrop-filter: blur(12px);
+            z-index: 10;
         }
 
-        .nv-copilot-title {
+        .full-ai-brand {
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-weight: 700;
-            font-size: 1.05rem;
-            color: #fff;
+            gap: 12px;
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: #FFFFFF;
         }
 
-        .nv-copilot-close {
+        .full-ai-brand strong {
+            color: #B8860B;
+        }
+
+        .full-ai-actions {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .full-ai-btn-reset {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: rgba(255, 255, 255, 0.8);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .full-ai-btn-reset:hover {
+            background: rgba(184, 134, 11, 0.15);
+            border-color: rgba(184, 134, 11, 0.4);
+            color: #B8860B;
+        }
+
+        .full-ai-close-btn {
             background: transparent;
             border: none;
             color: rgba(255, 255, 255, 0.5);
             cursor: pointer;
             padding: 6px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 50%;
-            transition: all 0.2s;
+            transition: all 0.2s ease;
         }
 
-        .nv-copilot-close:hover {
+        .full-ai-close-btn:hover {
             background: rgba(255, 255, 255, 0.1);
-            color: #fff;
+            color: #FFFFFF;
         }
 
-        /* Body */
-        .nv-copilot-body {
+        .full-ai-landing {
             flex: 1;
-            padding: 20px;
-            overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 16px;
-            scroll-behavior: smooth;
-        }
-
-        .nv-copilot-body::-webkit-scrollbar {
-            width: 5px;
-        }
-
-        .nv-copilot-body::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: 3px;
-        }
-
-        /* Messages */
-        .nv-msg {
-            padding: 14px 16px;
-            border-radius: 14px;
-            font-size: 0.92rem;
-            line-height: 1.55;
-            max-width: 88%;
-            word-wrap: break-word;
-            animation: nvFadeIn 0.3s ease-out forwards;
-        }
-
-        .nv-msg.nv-greeting,
-        .nv-msg.ai {
-            background: rgba(184, 134, 11, 0.08);
-            /* Gold background */
-            border: 1px solid rgba(184, 134, 11, 0.15);
-            /* Gold border */
-            color: #ddd;
-            align-self: flex-start;
-            border-bottom-left-radius: 4px;
-        }
-
-        .nv-msg.user {
-            background: rgba(255, 255, 255, 0.05);
-            color: #fff;
-            align-self: flex-end;
-            border-bottom-right-radius: 4px;
-        }
-
-        .nv-msg.system {
-            background: rgba(255, 193, 7, 0.08);
-            border: 1px solid rgba(255, 193, 7, 0.15);
-            color: #ddd;
-            align-self: center;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
             text-align: center;
-            max-width: 95%;
-            font-size: 0.82rem;
         }
 
-        /* Typing */
-        .nv-typing {
+        .full-ai-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #FFFFFF;
+            margin-bottom: 12px;
+            letter-spacing: -0.02em;
+        }
+
+        .full-ai-subtitle {
+            font-size: 1.05rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 36px;
+        }
+
+        .full-ai-pill-box {
+            width: 100%;
+            max-width: 680px;
+            background: #111522;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 36px;
+            padding: 8px 12px 8px 24px;
             display: flex;
-            gap: 5px;
-            padding: 14px 16px;
-            background: rgba(184, 134, 11, 0.05);
-            border-radius: 14px;
-            border-bottom-left-radius: 4px;
-            align-self: flex-start;
+            align-items: center;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 183, 3, 0.05);
+            transition: all 0.3s ease;
         }
 
-        .nv-typing-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: var(--vaidya-gold, #B8860B);
-            animation: nvTyping 1.4s infinite ease-in-out both;
+        .full-ai-pill-box:focus-within {
+            border-color: rgba(255, 183, 3, 0.6);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(255, 183, 3, 0.15);
+            background: #141928;
         }
 
-        .nv-typing-dot:nth-child(1) {
-            animation-delay: -0.32s;
-        }
-
-        .nv-typing-dot:nth-child(2) {
-            animation-delay: -0.16s;
-        }
-
-        @keyframes nvTyping {
-
-            0%,
-            80%,
-            100% {
-                transform: scale(0);
-                opacity: 0.3;
-            }
-
-            40% {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-
-        @keyframes nvFadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(8px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Footer / Input */
-        .nv-copilot-footer {
-            padding: 16px;
-            background: rgba(0, 0, 0, 0.3);
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .nv-copilot-form {
-            display: flex;
-            gap: 8px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 30px;
-            padding: 4px 4px 4px 18px;
-            transition: border-color 0.3s;
-        }
-
-        .nv-copilot-form:focus-within {
-            border-color: rgba(184, 134, 11, 0.5);
-            background: rgba(255, 255, 255, 0.08);
-        }
-
-        .nv-copilot-input {
+        .full-ai-pill-input {
             flex: 1;
             background: transparent;
             border: none;
-            color: #fff;
-            font-family: inherit;
-            font-size: 0.92rem;
             outline: none;
+            color: #FFFFFF;
+            font-size: 1.05rem;
+            font-family: inherit;
         }
 
-        .nv-copilot-input::placeholder {
+        .full-ai-pill-input::placeholder {
             color: rgba(255, 255, 255, 0.35);
         }
 
-        .nv-copilot-submit {
-            background: var(--vaidya-gold, #B8860B);
-            color: #000;
+        .full-ai-pill-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .full-ai-mic-btn {
+            background: rgba(255, 255, 255, 0.06);
             border: none;
-            width: 38px;
-            height: 38px;
+            color: rgba(255, 255, 255, 0.6);
+            width: 42px;
+            height: 42px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.2s;
-            flex-shrink: 0;
+            transition: all 0.2s ease;
         }
 
-        .nv-copilot-submit:hover:not(:disabled) {
-            transform: scale(1.05);
-            box-shadow: 0 0 14px rgba(184, 134, 11, 0.4);
+        .full-ai-mic-btn:hover {
+            background: rgba(184, 134, 11, 0.18);
+            color: #B8860B;
         }
 
-        .nv-copilot-submit:disabled {
-            background: rgba(255, 255, 255, 0.2);
-            color: rgba(255, 255, 255, 0.4);
-            cursor: not-allowed;
+        .full-ai-mic-btn.recording {
+            background: #e63946 !important;
+            color: #FFFFFF !important;
+            animation: pulseMic 1.2s infinite;
         }
 
-        /* Mobile */
-        @media (max-width: 768px) {
-            .nv-copilot-sidebar {
-                position: fixed;
-                top: 0;
-                right: 0;
-                bottom: 0;
-                height: 100vh;
-                z-index: 9999;
-                border-radius: 0;
-                border-left: none;
-            }
+        @keyframes pulseMic {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(230, 57, 70, 0.7); }
+            70% { transform: scale(1.08); box-shadow: 0 0 0 10px rgba(230, 57, 70, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(230, 57, 70, 0); }
+        }
 
-            .nv-split-layout.active .nv-copilot-sidebar {
-                width: 100% !important;
-                min-width: 100%;
-            }
+        .full-ai-send-btn {
+            background: #B8860B;
+            color: #080A10;
+            border: none;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
 
-            .nv-split-layout.active .nv-main-content {
-                display: none;
-            }
+        .full-ai-send-btn:hover {
+            transform: scale(1.06);
+            box-shadow: 0 0 18px rgba(184, 134, 11, 0.5);
+            background: #C59B27;
+        }
+
+        .full-ai-suggestions {
+            margin-top: 36px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .full-ai-suggestions-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            color: #B8860B;
+            text-transform: uppercase;
+        }
+
+        .full-ai-chips-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .full-ai-chip {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.85);
+            padding: 10px 20px;
+            border-radius: 24px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .full-ai-chip:hover {
+            background: rgba(184, 134, 11, 0.12);
+            border-color: rgba(184, 134, 11, 0.35);
+            color: #B8860B;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .full-ai-disclaimer {
+            margin-top: 48px;
+            font-size: 0.82rem;
+            color: rgba(255, 255, 255, 0.35);
+        }
+
+        .full-ai-chat-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .full-ai-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            scroll-behavior: smooth;
+        }
+
+        .full-ai-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .full-ai-messages::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 3px;
+        }
+
+        .full-ai-msg-row {
+            display: flex;
+            width: 100%;
+        }
+
+        .full-ai-msg-row.user {
+            justify-content: flex-end;
+        }
+
+        .full-ai-msg-row.ai {
+            justify-content: flex-start;
+        }
+
+        .full-ai-bubble {
+            max-width: 80%;
+            padding: 16px 22px;
+            border-radius: 20px;
+            font-size: 0.98rem;
+            line-height: 1.6;
+            animation: fullAiFadeIn 0.3s ease-out forwards;
+        }
+
+        @keyframes fullAiFadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .full-ai-msg-row.user .full-ai-bubble {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #FFFFFF;
+            border-bottom-right-radius: 4px;
+        }
+
+        .full-ai-msg-row.ai .full-ai-bubble {
+            background: #101420;
+            border: 1px solid rgba(184, 134, 11, 0.25);
+            color: #E2E8F0;
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .full-ai-msg-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #B8860B;
+            margin-bottom: 6px;
+        }
+
+        .full-ai-bottom-bar {
+            padding: 16px 24px 24px;
+            background: rgba(8, 10, 16, 0.95);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .full-ai-pill-box.bottom-pill {
+            max-width: 800px;
+        }
+
+        .full-ai-disclaimer-small {
+            font-size: 0.78rem;
+            color: rgba(255, 255, 255, 0.35);
         }
     </style>
 
     <script src="{% static 'js/main.js' %}"></script>
     <script>
         // ==========================================
-        // Global Neuro AI Copilot
+        // Full-Screen Black & Gold AI Agent Logic
         // ==========================================
         (function () {
-            const layout = document.getElementById('nvSplitLayout');
-            const body = document.getElementById('nvCopilotBody');
-            const input = document.getElementById('nvCopilotInput');
-            const submit = document.getElementById('nvCopilotSubmit');
-            const navBtn = document.getElementById('neuroAiNavToggle');
-            const CHAT_KEY = 'neuroai_chat';
-            const OPEN_KEY = 'neuroai_open';
+            const container = document.getElementById('fullAiAgentContainer');
+            const landingView = document.getElementById('fullAiLanding');
+            const chatView = document.getElementById('fullAiChatBody');
+            const messagesContainer = document.getElementById('fullAiMessages');
+            const landingInput = document.getElementById('fullAiLandingInput');
+            const chatInput = document.getElementById('fullAiChatInput');
+            const tabAiBtn = document.getElementById('tabAiAgent');
 
-            // Restore chat history from sessionStorage
-            function restoreChat() {
-                const saved = sessionStorage.getItem(CHAT_KEY);
-                if (saved) {
-                    try {
-                        const msgs = JSON.parse(saved);
-                        msgs.forEach(m => appendMsg(m.sender, m.text, true));
-                    } catch (e) { }
-                }
+            // Speech Recognition initialization
+            let recognition = null;
+            let activeMicBtnId = null;
+
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+                recognition = new SpeechRec();
+                recognition.continuous = false;
+                recognition.interimResults = true;
+                recognition.lang = 'en-US';
+
+                recognition.onresult = function(e) {
+                    let transcript = '';
+                    for (let i = e.resultIndex; i < e.results.length; i++) {
+                        transcript += e.results[i][0].transcript;
+                    }
+                    if (activeMicBtnId) {
+                        const targetInputId = activeMicBtnId === 'fullAiLandingMicBtn' ? 'fullAiLandingInput' : 'fullAiChatInput';
+                        document.getElementById(targetInputId).value = transcript;
+                    }
+                };
+
+                recognition.onend = function() {
+                    if (activeMicBtnId) {
+                        document.getElementById(activeMicBtnId)?.classList.remove('recording');
+                        activeMicBtnId = null;
+                    }
+                };
             }
 
-            // Save chat to sessionStorage
-            function saveChat() {
-                const msgs = [];
-                body.querySelectorAll('.nv-msg:not(.nv-greeting)').forEach(el => {
-                    const sender = el.classList.contains('user') ? 'user' : el.classList.contains('system') ? 'system' : 'ai';
-                    msgs.push({ sender, text: el.innerHTML });
-                });
-                sessionStorage.setItem(CHAT_KEY, JSON.stringify(msgs));
-            }
-
-            // Toggle sidebar
-            window.toggleAICopilot = function () {
-                layout.classList.toggle('active');
-                const isOpen = layout.classList.contains('active');
-                sessionStorage.setItem(OPEN_KEY, isOpen ? '1' : '0');
-                if (navBtn) navBtn.classList.toggle('active', isOpen);
-                if (isOpen) {
-                    setTimeout(() => { input.focus(); body.scrollTop = body.scrollHeight; }, 350);
+            window.toggleVoiceInput = function(inputId, btnId) {
+                if (!recognition) {
+                    alert('Voice dictation is not supported in your browser.');
+                    return;
                 }
-            };
-
-            // Navbar button handler
-            window.handleNeuroAiToggle = function () {
-                toggleAICopilot();
-            };
-
-            // Append a message
-            function appendMsg(sender, text, isRestore) {
-                const div = document.createElement('div');
-                div.className = 'nv-msg ' + sender;
-                if (isRestore) {
-                    div.innerHTML = text;
+                const btn = document.getElementById(btnId);
+                if (activeMicBtnId === btnId) {
+                    recognition.stop();
+                    btn?.classList.remove('recording');
+                    activeMicBtnId = null;
                 } else {
-                    let fmt = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-                    fmt = fmt.replace(/\n/g, '<br>');
-                    div.innerHTML = fmt;
+                    if (activeMicBtnId) {
+                        document.getElementById(activeMicBtnId)?.classList.remove('recording');
+                    }
+                    activeMicBtnId = btnId;
+                    btn?.classList.add('recording');
+                    recognition.start();
                 }
-                body.appendChild(div);
-                body.scrollTop = body.scrollHeight;
-                if (!isRestore) saveChat();
-                return div;
-            }
+            };
 
-            // Typing indicator
-            function showTyping() {
-                const t = document.createElement('div');
-                t.className = 'nv-typing'; t.id = 'nvTyping';
-                t.innerHTML = '<div class="nv-typing-dot"></div><div class="nv-typing-dot"></div><div class="nv-typing-dot"></div>';
-                body.appendChild(t); body.scrollTop = body.scrollHeight;
-            }
-            function hideTyping() { const t = document.getElementById('nvTyping'); if (t) t.remove(); }
+            // Toggle Full-Screen AI Agent
+            window.toggleAICopilot = function () {
+                container.classList.toggle('open');
+                const isOpen = container.classList.contains('open');
+                const allSidebarTabs = document.querySelectorAll('.sidebar-tab');
 
-            // CSRF helper
-            function getCookie(name) {
+                if (isOpen) {
+                    allSidebarTabs.forEach(t => {
+                        if (t !== tabAiBtn && t.classList.contains('active')) {
+                            t.dataset.wasActive = 'true';
+                            t.classList.remove('active');
+                        }
+                    });
+                    if (tabAiBtn) tabAiBtn.classList.add('active');
+                } else {
+                    if (tabAiBtn) tabAiBtn.classList.remove('active');
+                    allSidebarTabs.forEach(t => {
+                        if (t.dataset.wasActive === 'true') {
+                            t.classList.add('active');
+                            delete t.dataset.wasActive;
+                        }
+                    });
+                }
+
+                if (isOpen) {
+                    setTimeout(() => {
+                        if (chatView.style.display !== 'none') {
+                            chatInput.focus();
+                        } else {
+                            landingInput.focus();
+                        }
+                    }, 300);
+                }
+            };
+
+            // CSRF Helper
+            function getCsrfToken() {
                 let v = null;
                 if (document.cookie && document.cookie !== '') {
                     document.cookie.split(';').forEach(c => {
                         c = c.trim();
-                        if (c.substring(0, name.length + 1) === (name + '='))
-                            v = decodeURIComponent(c.substring(name.length + 1));
+                        if (c.substring(0, 10) === 'csrftoken=')
+                            v = decodeURIComponent(c.substring(10));
                     });
                 }
                 return v;
             }
 
-            // Send message
-            window.sendAIMessage = async function (e) {
-                e.preventDefault();
-                const text = input.value.trim();
-                if (!text) return;
-                appendMsg('user', text);
-                input.value = '';
-                input.disabled = true; submit.disabled = true;
-                showTyping();
+            // Append message to full screen chat
+            function appendFullAiMsg(sender, text) {
+                landingView.style.display = 'none';
+                chatView.style.display = 'flex';
+
+                const row = document.createElement('div');
+                row.className = `full-ai-msg-row ${sender}`;
+
+                let formatted = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+
+                if (sender === 'ai') {
+                    row.innerHTML = `
+                        <div class="full-ai-bubble">
+                            <div class="full-ai-msg-header">✨ Neuro AI</div>
+                            <div>${formatted}</div>
+                        </div>
+                    `;
+                } else {
+                    row.innerHTML = `
+                        <div class="full-ai-bubble">
+                            <div>${formatted}</div>
+                        </div>
+                    `;
+                }
+
+                messagesContainer.appendChild(row);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+
+            function showTypingIndicator() {
+                const row = document.createElement('div');
+                row.className = 'full-ai-msg-row ai';
+                row.id = 'fullAiTypingRow';
+                row.innerHTML = `
+                    <div class="full-ai-bubble" style="padding: 14px 20px;">
+                        <div class="full-ai-msg-header">✨ Neuro AI</div>
+                        <div style="display:flex; gap:6px; align-items:center; padding:4px 0;">
+                            <div class="nv-typing-dot"></div>
+                            <div class="nv-typing-dot"></div>
+                            <div class="nv-typing-dot"></div>
+                        </div>
+                    </div>
+                `;
+                messagesContainer.appendChild(row);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+
+            function removeTypingIndicator() {
+                const el = document.getElementById('fullAiTypingRow');
+                if (el) el.remove();
+            }
+
+            // Send Prompt API
+            async function executeSendPrompt(promptText) {
+                if (!promptText) return;
+                appendFullAiMsg('user', promptText);
+                showTypingIndicator();
+
                 try {
                     const res = await fetch('/api/search/ai-chat/', {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
-                        body: JSON.stringify({ prompt: text })
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCsrfToken()
+                        },
+                        body: JSON.stringify({ prompt: promptText })
                     });
-                    hideTyping();
+                    removeTypingIndicator();
                     if (res.ok) {
                         const data = await res.json();
-                        if (data.response) appendMsg('ai', data.response);
-                        else if (data.error) appendMsg('system', 'Error: ' + data.error);
+                        if (data.response) appendFullAiMsg('ai', data.response);
+                        else appendFullAiMsg('ai', 'Error: ' + (data.error || 'Unknown response'));
                     } else {
-                        appendMsg('system', 'Neuro AI is currently offline. Please try again later.');
+                        const data = await res.json().catch(() => ({}));
+                        appendFullAiMsg('ai', data.error ? `Error: ${data.error}` : 'Neuro AI is currently offline. Please try again later.');
                     }
                 } catch (err) {
-                    hideTyping();
-                    appendMsg('system', 'Network error. Could not connect to Neuro AI.');
-                } finally {
-                    input.disabled = false; submit.disabled = false; input.focus();
+                    removeTypingIndicator();
+                    appendFullAiMsg('ai', 'Network error. Could not connect to Neuro AI.');
                 }
+            }
+
+            // Submit Handlers
+            window.handleFullAiLandingSubmit = function (e) {
+                e.preventDefault();
+                const text = landingInput.value.trim();
+                if (!text) return;
+                landingInput.value = '';
+                executeSendPrompt(text);
             };
 
-            // Init: restore state
-            restoreChat();
-            if (sessionStorage.getItem(OPEN_KEY) === '1') {
-                layout.classList.add('active');
-                if (navBtn) navBtn.classList.add('active');
-                setTimeout(() => { body.scrollTop = body.scrollHeight; }, 100);
-            }
+            window.handleFullAiChatSubmit = function (e) {
+                e.preventDefault();
+                const text = chatInput.value.trim();
+                if (!text) return;
+                chatInput.value = '';
+                executeSendPrompt(text);
+            };
+
+            window.sendQuickPrompt = function (text) {
+                executeSendPrompt(text);
+            };
+
+            window.resetFullAiChat = function () {
+                messagesContainer.innerHTML = '';
+                chatView.style.display = 'none';
+                landingView.style.display = 'flex';
+                landingInput.value = '';
+                landingInput.focus();
+            };
+
+            // Modal Handlers
+            window.openUploadModal = function() {
+                const m = document.getElementById('uploadModal');
+                if (m) m.classList.add('open');
+            };
+            window.closeUploadModal = function() {
+                const m = document.getElementById('uploadModal');
+                if (m) m.classList.remove('open');
+            };
         })();
+
+        // Automatically unregister stale Service Workers registered from Vite/PWA dev setups
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                for (let registration of registrations) {
+                    registration.unregister();
+                }
+            });
+        }
     </script>
     {% block extra_js %}{% endblock %}
 </body>
